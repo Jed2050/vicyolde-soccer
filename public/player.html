@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Player Profile — VICYOLDE SOCCER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#08070a;--black-2:#0f0d14;--black-3:#161320;--black-4:#1e1a2a;--gold:#c9921e;--gold-2:#e8b44a;--gold-3:#f5cf5c;--gold-dim:rgba(201,146,30,.18);--red:#c8102e;--red-dim:rgba(200,16,46,.15);--cream:#f0e8d6;--cream-2:rgba(240,232,214,.65);--cream-3:rgba(240,232,214,.35);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--cream);font-family:'Inter',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+::selection{background:var(--gold);color:var(--black);}
+a{color:inherit;text-decoration:none;}
+
+.bg-fixed{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,146,30,.12),transparent 55%),var(--black);}
+
+/* NAV */
+nav{position:fixed;top:0;inset-inline:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(8,7,10,.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,146,30,.1);}
+.nav-brand{display:flex;align-items:center;gap:12px;}
+.nav-crest{width:32px;height:37px;filter:drop-shadow(0 0 10px rgba(201,146,30,.45));}
+.nav-brand-text .top{font-family:'Cinzel',serif;font-weight:800;font-size:14px;letter-spacing:.2em;background:linear-gradient(135deg,#f5cf5c,#e8b44a,#c9921e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-brand-text .bot{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.4em;color:var(--cream-3);margin-top:3px;}
+.nav-end{display:flex;gap:10px;align-items:center;}
+.btn-nav{padding:7px 18px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;}
+.btn-nav.gold{background:linear-gradient(180deg,#f5cf5c,#e8b44a);color:var(--black);border:none;}
+.btn-nav.outline{background:transparent;color:var(--cream-2);border:1px solid rgba(240,232,214,.18);}
+.user-nav{display:flex;align-items:center;gap:8px;}
+.user-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold-2),var(--gold));display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;font-size:10px;color:var(--black);}
+
+/* HERO */
+.player-hero{position:relative;z-index:1;min-height:90vh;display:flex;flex-direction:column;justify-content:flex-end;padding:100px 0 0;}
+.hero-bg{position:absolute;inset:0;overflow:hidden;}
+.hero-bg-img{position:absolute;inset:0;background-size:cover;background-position:center top;opacity:.18;}
+.hero-bg-mesh{position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(8,7,10,.3) 0%,rgba(8,7,10,.6) 50%,rgba(8,7,10,.98) 100%),
+    radial-gradient(ellipse 60% 50% at 70% 40%,rgba(200,16,46,.08),transparent 60%),
+    radial-gradient(ellipse 50% 60% at 20% 60%,rgba(201,146,30,.06),transparent 60%);}
+.hero-grid-overlay{position:absolute;inset:0;background-image:linear-gradient(rgba(201,146,30,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,146,30,.025) 1px,transparent 1px);background-size:80px 80px;}
+.hero-content{position:relative;z-index:2;padding:60px 48px;}
+.player-badge{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.player-number{font-family:'Cinzel',serif;font-weight:900;font-size:96px;line-height:1;color:rgba(201,146,30,.15);position:absolute;right:48px;top:50%;transform:translateY(-50%);letter-spacing:-.04em;pointer-events:none;user-select:none;}
+.pos-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:var(--red-dim);border:1px solid rgba(200,16,46,.35);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.24em;color:#ff6070;text-transform:uppercase;}
+.nat-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;background:var(--gold-dim);border:1px solid rgba(201,146,30,.3);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--gold-2);}
+h1.player-name{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(56px,9vw,120px);line-height:.9;letter-spacing:-.03em;color:var(--cream);margin-bottom:32px;}
+h1.player-name span{display:block;background:linear-gradient(160deg,#f5cf5c 0%,#e8b44a 40%,#c9921e 75%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.player-stats-bar{display:flex;gap:0;border-top:1px solid rgba(201,146,30,.2);border-bottom:1px solid rgba(201,146,30,.1);padding:28px 0;margin-bottom:48px;}
+.pstat{padding:0 32px 0 0;margin-right:32px;border-right:1px solid rgba(201,146,30,.12);}
+.pstat:last-child{border-right:none;padding-right:0;margin-right:0;}
+.pstat .n{font-family:'Cinzel',serif;font-weight:700;font-size:36px;color:var(--gold-3);line-height:1;}
+.pstat .l{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.25em;color:var(--cream-3);margin-top:6px;text-transform:uppercase;}
+.author-row{display:flex;align-items:center;gap:14px;padding-top:20px;border-top:1px solid rgba(201,146,30,.1);}
+.auth-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold-2),var(--gold));display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;font-size:14px;color:var(--black);}
+.auth-name{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:var(--gold-2);}
+.auth-role{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cream-3);letter-spacing:.2em;margin-top:3px;}
+.auth-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cream-3);margin-left:auto;letter-spacing:.1em;}
+
+/* ANALYSIS BODY */
+.analysis-wrap{position:relative;z-index:2;max-width:800px;margin:0 auto;padding:72px 48px 80px;}
+.analysis h2{font-family:'Cinzel',serif;font-weight:700;font-size:28px;color:var(--gold-2);margin:48px 0 18px;line-height:1.1;}
+.analysis h3{font-family:'Cinzel',serif;font-weight:600;font-size:21px;color:var(--cream);margin:36px 0 14px;line-height:1.2;}
+.analysis p{margin-bottom:22px;line-height:1.8;color:var(--cream-2);font-size:17px;font-weight:300;}
+.analysis strong{color:var(--gold-2);font-weight:600;}
+.analysis em{font-style:italic;color:rgba(240,232,214,.9);}
+.analysis blockquote{border-left:3px solid var(--gold-2);padding:18px 28px;margin:36px 0;background:rgba(201,146,30,.05);border-radius:0 8px 8px 0;}
+.analysis blockquote p{font-size:19px;font-style:italic;color:var(--cream);}
+.analysis ul,.analysis ol{margin:20px 0 20px 28px;}
+.analysis li{margin-bottom:10px;line-height:1.7;color:var(--cream-2);}
+.analysis hr{border:none;border-top:1px solid rgba(201,146,30,.15);margin:48px 0;}
+.analysis img{max-width:100%;border-radius:8px;margin:28px 0;}
+.analysis code{font-family:'JetBrains Mono',monospace;background:rgba(240,232,214,.06);padding:2px 7px;border-radius:4px;font-size:.9em;}
+
+/* TAGS */
+.analysis-tags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;}
+.a-tag{padding:5px 14px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;}
+.a-tag.gold{background:var(--gold-dim);border:1px solid rgba(201,146,30,.3);color:var(--gold-2);}
+.a-tag.red{background:var(--red-dim);border:1px solid rgba(200,16,46,.35);color:#ff6070;}
+
+/* RELATED PLAYERS */
+.related{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 48px 100px;}
+.related h2{font-family:'Cinzel',serif;font-weight:700;font-size:28px;margin-bottom:8px;}
+.related-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.35em;color:var(--gold-2);text-transform:uppercase;margin-bottom:12px;}
+.related-divider{height:1px;background:linear-gradient(90deg,rgba(201,146,30,.3),transparent);margin-bottom:32px;}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.player-mini{display:block;background:var(--black-3);border:1px solid rgba(201,146,30,.12);border-radius:10px;overflow:hidden;transition:border-color .25s,transform .3s;}
+.player-mini:hover{border-color:rgba(201,146,30,.4);transform:translateY(-3px);}
+.player-mini-img{aspect-ratio:16/9;background:linear-gradient(135deg,var(--black-4),var(--black-3));position:relative;overflow:hidden;background-size:cover;background-position:center top;}
+.player-mini-img::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(8,7,10,.9) 100%);}
+.player-mini-num{position:absolute;top:10px;right:14px;font-family:'Cinzel',serif;font-weight:900;font-size:28px;color:rgba(201,146,30,.3);}
+.player-mini-body{padding:14px 16px;}
+.player-mini h4{font-family:'Cinzel',serif;font-weight:700;font-size:16px;margin-bottom:4px;transition:color .2s;}
+.player-mini:hover h4{color:var(--gold-2);}
+.player-mini .pos{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--cream-3);}
+
+/* COMMENTS */
+.comments-section{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:0 48px 100px;}
+.cs-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.4em;color:var(--gold-2);text-transform:uppercase;margin-bottom:12px;}
+.cs-title{font-family:'Cinzel',serif;font-weight:700;font-size:28px;margin-bottom:36px;padding-bottom:18px;border-bottom:1px solid rgba(201,146,30,.15);}
+.composer{background:linear-gradient(180deg,var(--black-3),var(--black-2));border:1px solid rgba(201,146,30,.25);border-radius:10px;padding:20px;margin-bottom:20px;transition:border-color .3s,box-shadow .3s;}
+.composer:focus-within{border-color:var(--gold-2);box-shadow:0 0 0 3px rgba(201,146,30,.07);}
+.composer-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.composer-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--black-4),var(--black-2));border:1px solid rgba(201,146,30,.3);display:grid;place-items:center;color:var(--gold-2);font-family:'Cinzel',serif;font-weight:700;}
+.composer textarea{width:100%;background:transparent;border:none;outline:none;color:var(--cream);resize:none;font-family:'Inter',sans-serif;font-size:15px;min-height:56px;line-height:1.5;}
+.composer textarea::placeholder{color:var(--cream-3);}
+.composer-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:12px;border-top:1px solid rgba(201,146,30,.1);}
+.composer-hint{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--cream-3);}
+.post-btn{padding:8px 20px;background:linear-gradient(180deg,#f5cf5c,#e8b44a);color:var(--black);border:none;border-radius:6px;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:transform .2s;}
+.post-btn:hover{transform:translateY(-1px);}
+.auth-prompt{padding:16px 22px;background:rgba(201,146,30,.05);border:1px solid rgba(201,146,30,.18);border-radius:10px;text-align:center;font-size:14px;color:var(--cream-2);margin-bottom:20px;}
+.auth-prompt a{color:var(--gold-2);font-weight:600;}
+.sort-tabs{display:flex;gap:6px;margin-bottom:20px;}
+.sort-tab{padding:6px 13px;background:transparent;border:1px solid rgba(201,146,30,.18);color:var(--cream-3);border-radius:999px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;transition:all .2s;}
+.sort-tab.on{background:rgba(201,146,30,.1);border-color:rgba(201,146,30,.45);color:var(--gold-2);}
+.clist{display:flex;flex-direction:column;gap:16px;}
+.cmt{display:flex;gap:12px;padding:16px;background:rgba(240,232,214,.015);border-radius:10px;border-left:2px solid transparent;transition:all .2s;}
+.cmt:hover{background:rgba(240,232,214,.03);border-left-color:var(--gold-2);}
+.cav{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:700;font-size:12px;color:var(--black);}
+.cbody{flex:1;min-width:0;}
+.chead{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.cname{font-weight:600;font-size:13px;}
+.cbadge{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.15em;padding:2px 6px;border-radius:3px;text-transform:uppercase;}
+.cbadge.author{background:rgba(200,16,46,.15);color:#ff6070;border:1px solid rgba(200,16,46,.35);}
+.ctime{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cream-3);}
+.ctext{font-size:13px;line-height:1.6;color:var(--cream-2);}
+.react-row{display:flex;gap:6px;margin-top:10px;}
+.rbtn{padding:3px 10px;border-radius:999px;background:rgba(240,232,214,.04);border:1px solid rgba(201,146,30,.12);cursor:pointer;font-size:12px;color:var(--cream-2);display:flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all .18s;}
+.rbtn:hover,.rbtn.on{background:rgba(201,146,30,.1);border-color:rgba(201,146,30,.4);color:var(--gold-2);}
+.burst{position:absolute;pointer-events:none;font-size:18px;animation:burst 1s ease-out forwards;}
+@keyframes burst{0%{opacity:1;transform:translateY(0) scale(.8)}100%{opacity:0;transform:translateY(-48px) scale(1.4)}}
+.c-reply-btn{background:none;border:none;cursor:pointer;color:var(--cream-3);font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;padding:3px 10px;}
+.c-reply-btn:hover{color:var(--gold-2);}
+.c-del-btn{background:none;border:none;cursor:pointer;color:rgba(200,16,46,.4);font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;padding:3px 10px;}
+.c-del-btn:hover{color:#ff6070;}
+.c-replies{margin-top:12px;padding-left:14px;border-left:1px solid rgba(201,146,30,.12);display:flex;flex-direction:column;gap:12px;}
+.reply-form{margin-top:10px;background:rgba(240,232,214,.02);border:1px solid rgba(201,146,30,.15);border-radius:8px;padding:12px;display:none;}
+.reply-form textarea{width:100%;background:transparent;border:none;outline:none;color:var(--cream);resize:none;font-family:'Inter',sans-serif;font-size:13px;min-height:46px;}
+.reply-form-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:8px;}
+
+@media(max-width:700px){nav{padding:0 20px;}.hero-content{padding:40px 20px;}.analysis-wrap,.comments-section,.related{padding-left:20px;padding-right:20px;}.player-number{display:none;}.related-grid{grid-template-columns:1fr;}.player-stats-bar{flex-wrap:wrap;gap:20px;}.pstat{border-right:none;}}
+</style>
+</head>
+<body>
+<div class="bg-fixed"></div>
+
+<!-- CREST SVG -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+<defs>
+  <linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="50%" stop-color="#c9921e"/><stop offset="100%" stop-color="#7a5510"/></linearGradient>
+  <radialGradient id="bG" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="55%" stop-color="#a87020"/><stop offset="100%" stop-color="#3a2808"/></radialGradient>
+  <filter id="gF" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<symbol id="crest" viewBox="0 0 100 110">
+  <path d="M50 4L92 16L92 56Q92 88 50 106Q8 88 8 56L8 16Z" fill="url(#gG)" stroke="#f5cf5c" stroke-width=".7" filter="url(#gF)"/>
+  <path d="M50 10L86 20L86 56Q86 84 50 100Q14 84 14 56L14 20Z" fill="#0a0805" stroke="#c9921e" stroke-width=".5"/>
+  <polygon points="50,18 53,26 61,26 55,31 57,39 50,34 43,39 45,31 39,26 47,26" fill="url(#gG)"/>
+  <circle cx="50" cy="62" r="16" fill="url(#bG)" stroke="#f5cf5c" stroke-width=".5"/>
+  <polygon points="50,52 56,57 53,64 47,64 44,57" fill="#08070a"/>
+  <rect x="20" y="84" width="60" height="10" rx="1" fill="#08070a" stroke="#c9921e" stroke-width=".4"/>
+</symbol>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="/">
+    <svg class="nav-crest" viewBox="0 0 100 110"><use href="#crest"/></svg>
+    <div class="nav-brand-text"><div class="top">VICYOLDE SOCCER</div><div class="bot">THE KOP CHRONICLE</div></div>
+  </a>
+  <div class="nav-end" id="navEnd"></div>
+</nav>
+
+<!-- HERO -->
+<div class="player-hero" id="playerHero">
+  <div class="hero-bg">
+    <div class="hero-bg-img" id="heroBgImg"></div>
+    <div class="hero-bg-mesh"></div>
+    <div class="hero-grid-overlay"></div>
+  </div>
+  <div class="hero-content" id="heroContent">
+    <div style="color:var(--cream-3);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em">Loading…</div>
+  </div>
+</div>
+
+<!-- ANALYSIS -->
+<div class="analysis-wrap" id="analysisWrap" style="display:none">
+  <div class="analysis-tags" id="analysisTags"></div>
+  <div class="analysis" id="analysisBody"></div>
+</div>
+
+<!-- RELATED PLAYERS -->
+<div class="related" id="relatedSection" style="display:none">
+  <div class="related-label">MORE PROFILES</div>
+  <h2>Other Players</h2>
+  <div class="related-divider"></div>
+  <div class="related-grid" id="relatedGrid"></div>
+</div>
+
+<!-- COMMENTS -->
+<div class="comments-section" id="comments">
+  <div class="cs-label">THE KOP · DISCUSSION</div>
+  <div class="cs-title" id="commentTitle">Discussion</div>
+  <div id="composerArea"></div>
+  <div class="sort-tabs">
+    <button class="sort-tab on" data-sort="new">New</button>
+    <button class="sort-tab" data-sort="top">Top</button>
+  </div>
+  <div class="clist" id="clist">
+    <div style="text-align:center;padding:40px;color:var(--cream-3);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em">Loading comments…</div>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('vs_token');
+const user  = (() => { try { return JSON.parse(localStorage.getItem('vs_user')); } catch { return null; }})();
+const esc   = s => { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
+const timeAgo = d => { const s=(Date.now()-new Date(d))/1000; if(s<60)return 'just now'; if(s<3600)return Math.floor(s/60)+'m ago'; if(s<86400)return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago'; };
+const fmtDate = d => new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+let currentArticle = null, allComments = [], sortMode = 'new';
+
+// Nav
+(function() {
+  const el = document.getElementById('navEnd');
+  if (user) {
+    el.innerHTML = `<div class="user-nav"><div class="user-av">${user.username[0].toUpperCase()}</div><span style="font-size:13px;font-weight:600;color:var(--gold-2)">${esc(user.username)}</span></div>${user.role==='admin'?'<a class="btn-nav gold" href="/dashboard" style="font-size:10px">Dashboard</a>':''}<button class="btn-nav outline" style="font-size:10px" onclick="localStorage.clear();location.reload()">Sign out</button>`;
+  } else {
+    el.innerHTML = `<a class="btn-nav outline" href="/login" style="font-size:10px">Sign in</a><a class="btn-nav gold" href="/login?tab=register" style="font-size:10px">Join</a>`;
+  }
+})();
+
+// Load player profile
+const slug = location.pathname.replace(/^\/player\//,'').split('/')[0];
+if (!slug) location.href = '/';
+
+async function loadPlayer() {
+  try {
+    const a = await fetch(`/api/articles/${slug}`).then(r => { if(!r.ok) throw new Error('404'); return r.json(); });
+    if (a.category !== 'PLAYER') { location.href = `/article/${slug}`; return; }
+    currentArticle = a;
+    document.title = a.title + ' — VICYOLDE SOCCER';
+
+    // Parse player metadata from excerpt (JSON format)
+    let meta = {};
+    try { meta = JSON.parse(a.excerpt); } catch { meta = { position:'Liverpool FC', number:'', nationality:'', apps:'–', goals:'–', assists:'–', joined:'–' }; }
+
+    // Hero background
+    if (a.cover_url) {
+      document.getElementById('heroBgImg').style.cssText = `background-image:url('${a.cover_url}');background-size:cover;background-position:center top;opacity:.22;`;
+    }
+
+    // Hero content
+    const [first, ...rest] = a.title.trim().split(' ');
+    document.getElementById('heroContent').innerHTML = `
+      ${meta.number ? `<div class="player-number">${meta.number}</div>` : ''}
+      <div class="player-badge">
+        ${meta.position ? `<span class="pos-pill">${esc(meta.position)}</span>` : ''}
+        ${meta.nationality ? `<span class="nat-pill">${esc(meta.nationality)}</span>` : ''}
+      </div>
+      <h1 class="player-name">
+        ${esc(first)}<span>${rest.join(' ')}</span>
+      </h1>
+      <div class="player-stats-bar">
+        ${meta.apps    !== undefined ? `<div class="pstat"><div class="n">${meta.apps}</div><div class="l">Appearances</div></div>` : ''}
+        ${meta.goals   !== undefined ? `<div class="pstat"><div class="n">${meta.goals}</div><div class="l">Goals</div></div>` : ''}
+        ${meta.assists !== undefined ? `<div class="pstat"><div class="n">${meta.assists}</div><div class="l">Assists</div></div>` : ''}
+        ${meta.joined  !== undefined ? `<div class="pstat"><div class="n">${meta.joined}</div><div class="l">Year Joined</div></div>` : ''}
+      </div>
+      <div class="author-row">
+        <div class="auth-av">${a.author_name[0].toUpperCase()}</div>
+        <div><div class="auth-name">${esc(a.author_name)}</div><div class="auth-role">ANALYST · THE KOP CHRONICLE</div></div>
+        <div class="auth-date">${fmtDate(a.created_at)} · ${a.read_time} MIN READ · ${a.comment_count} COMMENTS</div>
+      </div>`;
+
+    // Analysis body
+    document.getElementById('analysisTags').innerHTML =
+      `<span class="a-tag gold">PLAYER ANALYSIS</span><span class="a-tag red">LIVERPOOL FC</span>${meta.position?`<span class="a-tag gold">${esc(meta.position).toUpperCase()}</span>`:''}`;
+    document.getElementById('analysisBody').innerHTML = a.content;
+    document.getElementById('analysisWrap').style.display = '';
+
+    // Load comments + related
+    loadComments();
+    loadRelated();
+  } catch (e) {
+    document.getElementById('heroContent').innerHTML = `
+      <h1 class="player-name" style="font-size:40px">Profile not found</h1>
+      <p style="color:var(--cream-2);margin-bottom:24px">This player profile doesn't exist yet.</p>
+      <a href="/" class="btn-nav gold">← Back home</a>`;
+  }
+}
+
+// Comments (same pattern as article.html)
+async function loadComments() {
+  const title = document.getElementById('commentTitle');
+  try {
+    allComments = await fetch(`/api/comments/${currentArticle.id}`).then(r=>r.json());
+    title.textContent = `${allComments.length} Comment${allComments.length===1?'':'s'}`;
+    renderComments(); renderComposer();
+  } catch {}
+}
+function renderComments() {
+  const list = document.getElementById('clist');
+  let sorted = [...allComments];
+  if (sortMode === 'top') sorted.sort((a,b)=>b.reactions.reduce((s,r)=>s+r.count,0)-a.reactions.reduce((s,r)=>s+r.count,0));
+  if (!sorted.length) { list.innerHTML='<div style="text-align:center;padding:60px;color:var(--cream-3);font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.2em;border:1px dashed rgba(201,146,30,.15);border-radius:10px">Be the first to analyse this player!</div>'; return; }
+  const AVCOLORS=['linear-gradient(135deg,#e8b44a,#7a5510)','linear-gradient(135deg,#c8102e,#6a0817)','linear-gradient(135deg,#c9b27e,#5c4a23)','linear-gradient(135deg,#e8b44a,#a87020)'];
+  list.innerHTML = sorted.map(c => renderCmt(c, false, AVCOLORS)).join('');
+  bindEvents();
+}
+function renderCmt(c, isReply, AVCOLORS) {
+  const idx = c.username.charCodeAt(0);
+  const reactions = c.reactions.map(r=>`<button class="rbtn" data-cid="${c.id}" data-emo="${r.emoji}">${r.emoji}<span>${r.count}</span></button>`).join('');
+  const replies = (!isReply && c.replies?.length) ? `<div class="c-replies">${c.replies.map(r=>renderCmt(r,true,AVCOLORS)).join('')}</div>` : '';
+  return `<div class="cmt" id="cmt-${c.id}">
+    <div class="cav" style="background:${AVCOLORS[idx%4]};color:${idx%4===1?'#fff':'#08070a'}">${c.username[0].toUpperCase()}</div>
+    <div class="cbody">
+      <div class="chead"><span class="cname">${esc(c.username)}</span>${c.role==='admin'?'<span class="cbadge author">✍ AUTHOR</span>':''}<span class="ctime">${timeAgo(c.created_at)}</span></div>
+      <div class="ctext">${esc(c.body)}</div>
+      <div class="react-row">${reactions}${user?`<button class="c-reply-btn" data-reply="${c.id}">Reply</button>`:''}${(user&&(user.id===c.user_id||user.role==='admin'))?`<button class="c-del-btn" data-del="${c.id}">Delete</button>`:''}</div>
+      ${!isReply?`<div class="reply-form" id="rf-${c.id}"><textarea placeholder="Reply…" id="rt-${c.id}"></textarea><div class="reply-form-foot"><button class="btn-nav outline" style="font-size:10px;padding:6px 14px" onclick="document.getElementById('rf-${c.id}').style.display='none'">Cancel</button><button class="post-btn" style="font-size:10px;padding:6px 14px" onclick="postReply(${c.id})">Reply</button></div></div>`:''}
+      ${replies}
+    </div>
+  </div>`;
+}
+function bindEvents() {
+  document.querySelectorAll('[data-reply]').forEach(b=>b.addEventListener('click',()=>{const f=document.getElementById('rf-'+b.dataset.reply);f.style.display=f.style.display?'':'block';}));
+  document.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Delete?'))return;const r=await fetch(`/api/comments/${b.dataset.del}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}});if(r.ok)loadComments();}));
+  document.querySelectorAll('.rbtn').forEach(b=>b.addEventListener('click',async()=>{
+    if(!user){location.href='/login';return;}
+    const r=await fetch(`/api/comments/${b.dataset.cid}/react`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({emoji:b.dataset.emo})});
+    if(r.ok){const d=await r.json();const ex=d.reactions.find(x=>x.emoji===b.dataset.emo);b.querySelector('span').textContent=ex?ex.count:0;b.classList.toggle('on',d.active);const burst=document.createElement('span');burst.className='burst';burst.textContent=b.dataset.emo;const rr=b.getBoundingClientRect();burst.style.cssText=`left:${rr.left+rr.width/2-10}px;top:${rr.top+scrollY-10}px;position:absolute;`;document.body.appendChild(burst);setTimeout(()=>burst.remove(),1000);}
+  }));
+}
+function renderComposer() {
+  const area = document.getElementById('composerArea');
+  if (!user) { area.innerHTML=`<div class="auth-prompt"><a href="/login">Sign in</a> or <a href="/login?tab=register">create an account</a> to join the discussion.</div>`; return; }
+  area.innerHTML=`<div class="composer"><div class="composer-head"><div class="composer-av">${user.username[0].toUpperCase()}</div><span style="font-size:13px;font-weight:500">Posting as <strong style="color:var(--gold-2)">${esc(user.username)}</strong></span></div><textarea id="newCmt" placeholder="Your tactical take on this player…"></textarea><div class="composer-foot"><span class="composer-hint">TACTICS OVER TRIBALISM.</span><button class="post-btn" onclick="postComment()">Post Comment</button></div></div>`;
+}
+async function postComment() { const t=document.getElementById('newCmt').value.trim(); if(!t)return; const r=await fetch(`/api/comments/${currentArticle.id}`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({body:t})}); if(r.ok){document.getElementById('newCmt').value='';loadComments();} }
+async function postReply(pid) { const t=document.getElementById('rt-'+pid).value.trim(); if(!t)return; const r=await fetch(`/api/comments/${currentArticle.id}`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({body:t,parent_id:pid})}); if(r.ok){document.getElementById('rt-'+pid).value='';document.getElementById('rf-'+pid).style.display='none';loadComments();} }
+document.querySelectorAll('.sort-tab').forEach(b=>b.addEventListener('click',()=>{sortMode=b.dataset.sort;document.querySelectorAll('.sort-tab').forEach(x=>x.classList.toggle('on',x===b));renderComments();}));
+
+// Related players
+async function loadRelated() {
+  try {
+    const { articles } = await fetch('/api/articles?category=PLAYER&limit=4').then(r=>r.json());
+    const filtered = articles.filter(a=>a.id!==currentArticle.id).slice(0,3);
+    if (!filtered.length) return;
+    const grid = document.getElementById('relatedGrid');
+    grid.innerHTML = filtered.map(a => {
+      let meta = {}; try { meta = JSON.parse(a.excerpt); } catch {}
+      return `<a class="player-mini" href="/player/${a.slug}">
+        <div class="player-mini-img" style="${a.cover_url?`background-image:url('${a.cover_url}');background-size:cover;background-position:center top`:'background:linear-gradient(135deg,var(--black-4),var(--black-3))'}">
+          ${meta.number?`<div class="player-mini-num">${meta.number}</div>`:''}
+        </div>
+        <div class="player-mini-body">
+          <h4>${esc(a.title)}</h4>
+          <div class="pos">${esc(meta.position||'Liverpool FC')}</div>
+        </div>
+      </a>`;
+    }).join('');
+    document.getElementById('relatedSection').style.display = '';
+  } catch {}
+}
+
+loadPlayer();
+</script>
+</body>
+</html>

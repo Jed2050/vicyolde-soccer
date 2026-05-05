@@ -36,6 +36,7 @@ app.get('/api/stats', (_req, res) => {
 const pub = (f) => (_req, res) => res.sendFile(path.join(__dirname, 'public', f));
 app.get('/dashboard*',    pub('dashboard/index.html'));
 app.get('/article/*',    pub('article.html'));
+app.get('/player/*',     pub('player.html'));
 app.get('/login',        pub('login.html'));
 app.get('/admin-access', pub('admin-access.html'));
 app.get('/',             pub('index.html'));

@@ -308,10 +308,11 @@ tr:hover td{background:rgba(212,168,54,.03);}
         <!-- Row: category, read time -->
         <div class="field">
           <label>Category</label>
-          <select id="aCategory">
+          <select id="aCategory" onchange="onCategoryChange(this.value)">
             <option>ANALYSIS</option><option>MATCH</option><option>TACTICS</option>
             <option>TRANSFER</option><option>OPINION</option><option>DATA</option>
             <option>SCOUTING</option><option>YOUTH</option>
+            <option value="PLAYER">⚽ PLAYER PROFILE</option>
           </select>
         </div>
         <div class="field">
@@ -330,6 +331,24 @@ tr:hover td{background:rgba(212,168,54,.03);}
         <div class="field editor-full">
           <label>Excerpt / Summary</label>
           <textarea id="aExcerpt" rows="3" placeholder="A one-paragraph summary of the article (shown on article cards and in the hero section)…"></textarea>
+
+        <!-- PLAYER METADATA PANEL (hidden unless category=PLAYER) -->
+        <div id="playerMetaPanel" style="display:none;margin-top:16px;background:rgba(201,146,30,.04);border:1px solid rgba(201,146,30,.2);border-radius:8px;padding:20px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;">⚽ Player Profile Metadata</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
+            <div class="field"><label>Position</label><input type="text" id="pmPosition" placeholder="Right Winger"/></div>
+            <div class="field"><label>Jersey Number</label><input type="number" id="pmNumber" placeholder="11" min="1" max="99"/></div>
+            <div class="field"><label>Nationality</label><input type="text" id="pmNat" placeholder="Egyptian"/></div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+            <div class="field"><label>Appearances</label><input type="number" id="pmApps" placeholder="287" min="0"/></div>
+            <div class="field"><label>Goals</label><input type="number" id="pmGoals" placeholder="211" min="0"/></div>
+            <div class="field"><label>Assists</label><input type="number" id="pmAssists" placeholder="89" min="0"/></div>
+            <div class="field"><label>Year Joined</label><input type="number" id="pmJoined" placeholder="2017" min="1900" max="2099"/></div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(244,236,214,.4);letter-spacing:.1em;margin-top:12px;">These stats are stored in the Excerpt field as JSON. The article content is your original tactical analysis.</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:14px" onclick="applyPlayerTemplate()">📋 Load Analysis Template</button>
+        </div>
         </div>
 
         <!-- Toggles -->
@@ -688,9 +707,78 @@ async function editArticle(id) {
   document.getElementById('aPublished').checked = !!a.published;
   document.getElementById('aFeatured').checked  = !!a.featured;
   document.getElementById('rteEditor').innerHTML = a.content;
+  onCategoryChange(a.category);
+  if (a.category === 'PLAYER') loadPlayerMeta(a.excerpt);
   previewCover(a.cover_url);
   updateWordCount();
   goPage('new-article');
+}
+
+// ── Player profile helpers ──────────────────────────────
+function onCategoryChange(val) {
+  const panel = document.getElementById('playerMetaPanel');
+  const excerptField = document.getElementById('aExcerpt');
+  if (val === 'PLAYER') {
+    panel.style.display = '';
+    excerptField.placeholder = 'Leave blank — auto-filled from player metadata above.';
+    excerptField.readOnly = true; excerptField.style.opacity = '.4';
+  } else {
+    panel.style.display = 'none';
+    excerptField.placeholder = 'A one-paragraph summary of the article…';
+    excerptField.readOnly = false; excerptField.style.opacity = '';
+  }
+}
+
+function buildPlayerExcerpt() {
+  return JSON.stringify({
+    position:    document.getElementById('pmPosition').value.trim() || undefined,
+    number:      parseInt(document.getElementById('pmNumber').value)  || undefined,
+    nationality: document.getElementById('pmNat').value.trim()     || undefined,
+    apps:        document.getElementById('pmApps').value    || '–',
+    goals:       document.getElementById('pmGoals').value   || '–',
+    assists:     document.getElementById('pmAssists').value || '–',
+    joined:      document.getElementById('pmJoined').value  || '–',
+  });
+}
+
+function applyPlayerTemplate() {
+  const name = document.getElementById('aTitle').value.trim() || 'the player';
+  document.getElementById('rteEditor').innerHTML = `
+<p>Every great team has a player who defies simple categorisation. <strong>${name}</strong> is Liverpool's version of that player — a figure whose contribution to Slot's system extends far beyond what the statistics capture.</p>
+
+<h2>Tactical Role at Liverpool</h2>
+<p>Within the 4-3-3 shape Slot has refined at Anfield, ${name} operates with a specific brief that sets the entire press structure in motion. The positioning, the movement off the ball, the recovery runs — each element serves a calculated tactical purpose.</p>
+
+<blockquote><p>The best Liverpool players don't just occupy positions. They define them.</p></blockquote>
+
+<h2>Key Strengths</h2>
+<ul>
+<li><strong>Off-ball movement:</strong> The ability to create space for teammates through intelligent decoy runs is a hallmark of this player's game.</li>
+<li><strong>Press triggers:</strong> Knowing exactly when to initiate the press — and more importantly when not to — keeps Liverpool's defensive shape intact.</li>
+<li><strong>Transition speed:</strong> The conversion from defensive to attacking mode happens in seconds. Few players in the Premier League match this tempo.</li>
+</ul>
+
+<h2>Areas to Watch</h2>
+<p>No player is without limitation. Understanding where the defensive exposure lies when ${name} commits forward is key to both supporting and opposition-planning against this Liverpool setup.</p>
+
+<h2>The Verdict</h2>
+<p>In a squad built on collective intelligence, <strong>${name}</strong> remains one of the most tactically essential pieces. The analysis above only scratches the surface — the details are in the 90 minutes.</p>`;
+  updateWordCount();
+  toast('Player analysis template loaded!');
+}
+
+// Load player meta when editing an existing PLAYER article
+function loadPlayerMeta(excerpt) {
+  try {
+    const m = JSON.parse(excerpt);
+    if (m.position)    document.getElementById('pmPosition').value  = m.position;
+    if (m.number)      document.getElementById('pmNumber').value    = m.number;
+    if (m.nationality) document.getElementById('pmNat').value       = m.nationality;
+    if (m.apps)        document.getElementById('pmApps').value      = m.apps;
+    if (m.goals)       document.getElementById('pmGoals').value     = m.goals;
+    if (m.assists)     document.getElementById('pmAssists').value   = m.assists;
+    if (m.joined)      document.getElementById('pmJoined').value    = m.joined;
+  } catch {}
 }
 
 async function saveArticle(publish) {
@@ -698,11 +786,13 @@ async function saveArticle(publish) {
   const content = document.getElementById('rteEditor').innerHTML.trim();
   if (!title)   { toast('Title is required.','error'); return; }
   if (!content || content === '<br>') { toast('Content cannot be empty.','error'); return; }
+  const category = document.getElementById('aCategory').value;
+  const excerpt  = category === 'PLAYER' ? buildPlayerExcerpt() : document.getElementById('aExcerpt').value.trim();
   const body = {
     title,
-    excerpt:   document.getElementById('aExcerpt').value.trim(),
+    excerpt,
     content,
-    category:  document.getElementById('aCategory').value,
+    category,
     read_time: parseInt(document.getElementById('aReadTime').value)||5,
     cover_url: document.getElementById('aCoverUrl').value.trim(),
     published: publish ? true : document.getElementById('aPublished').checked,
