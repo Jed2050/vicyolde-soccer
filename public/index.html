@@ -493,58 +493,19 @@ loadNews();
 async function loadFeatured() {
   const sec = document.getElementById('featuredSection');
   try {
-    let { articles } = await fetch('/api/articles?featured=true&limit=3').then(r=>r.json());
-
-    // Fallback: if no featured articles, use the 3 latest published articles
-    if (!articles.length) {
-      const res = await fetch('/api/articles?limit=3').then(r=>r.json());
-      articles = res.articles;
-    }
-
-    // Final fallback: use news items formatted as article cards
-    if (!articles.length) {
-      const news = await fetch('/api/news?limit=3').then(r=>r.json());
-      if (!news.length) { sec.innerHTML = '<div class="empty-state">Loading content…</div>'; return; }
-      const [main, ...rest] = news;
-      sec.innerHTML = `
-        <div class="feature-grid reveal">
-          <a class="feat-main" href="${main.link}" target="_blank" rel="noopener">
-            <div class="feat-img has-cover" style="${main.image_url?`background-image:url('${main.image_url}');background-size:cover;background-position:center`:''}"></div>
-            <div class="feat-overlay"></div>
-            <div class="feat-content">
-              <div class="feat-tags"><span class="tag">BREAKING</span><span class="tag red">LIVERPOOL</span></div>
-              <h3>${esc(main.title)}</h3>
-              <p>${esc(main.description||'')}</p>
-              <div class="feat-meta">
-                <div class="author"><div class="feat-avatar">V</div><span>VICYOLDE SOCCER</span></div>
-                <span class="dot"></span><span>${main.source}</span>
-                <span class="dot"></span><span>${timeAgo(main.pub_date)}</span>
-              </div>
-            </div>
-          </a>
-          ${rest.length?`<div class="feat-side">${rest.map(n=>`
-            <a class="side-card" href="${n.link}" target="_blank" rel="noopener">
-              <div class="img" style="${n.image_url?`background-image:url('${n.image_url}');background-size:cover;background-position:center`:''}"></div>
-              <div class="body">
-                <h4>${esc(n.title)}</h4>
-                <div class="meta">${n.source} · ${timeAgo(n.pub_date)}</div>
-              </div>
-            </a>`).join('')}</div>`:''}
-        </div>`;
-      revealObserver();
-      return;
-    }
-
+    const { articles } = await fetch('/api/articles?featured=true&limit=3').then(r=>r.json());
+    if (!articles.length) { sec.innerHTML = '<div class="empty-state">No featured articles yet. Publish one from the dashboard.</div>'; return; }
     const [main, ...rest] = articles;
+    const coverStyle = main.cover_url ? `background-image:url('${main.cover_url}')` : '';
     sec.innerHTML = `
       <div class="feature-grid reveal">
         <a class="feat-main" href="/article/${main.slug}">
-          <div class="feat-img has-cover" style="${main.cover_url?`background-image:url('${main.cover_url}');background-size:cover;background-position:center`:''}"></div>
+          <div class="feat-img has-cover" style="${coverStyle}"></div>
           <div class="feat-overlay"></div>
           <div class="feat-content">
             <div class="feat-tags"><span class="tag">${main.category}</span></div>
             <h3>${esc(main.title)}</h3>
-            <p>${esc(main.excerpt||'')}</p>
+            <p>${esc(main.excerpt || '')}</p>
             <div class="feat-meta">
               <div class="author"><div class="feat-avatar">${main.author_name[0]}</div><span>${main.author_name}</span></div>
               <span class="dot"></span><span>${main.read_time} MIN READ</span>
@@ -552,17 +513,17 @@ async function loadFeatured() {
             </div>
           </div>
         </a>
-        ${rest.length?`<div class="feat-side">${rest.map(a=>`
+        ${rest.length ? `<div class="feat-side">${rest.map(a=>`
           <a class="side-card" href="/article/${a.slug}">
-            <div class="img" ${a.cover_url?`style="background-image:url('${a.cover_url}');background-size:cover;background-position:center"`:''}></div>
+            <div class="img" ${a.cover_url?`style="background-image:url('${a.cover_url}')"`:''} ></div>
             <div class="body">
               <h4>${esc(a.title)}</h4>
               <div class="meta">${fmtDate(a.created_at)} · ${a.read_time} MIN</div>
             </div>
-          </a>`).join('')}</div>`:''}
+          </a>`).join('')}</div>` : ''}
       </div>`;
     revealObserver();
-  } catch(e) { sec.innerHTML = '<div class="empty-state">Could not load articles.</div>'; }
+  } catch { sec.innerHTML = '<div class="empty-state">Could not load featured articles.</div>'; }
 }
 loadFeatured();
 
@@ -572,39 +533,10 @@ async function loadArticles(append=false) {
   const btn  = document.getElementById('loadMoreBtn');
   const { articles, total } = await fetch(`/api/articles?page=${articlesPage}&limit=6`).then(r=>r.json());
   articlesTotal = total;
-
-  // Fallback to news items when no articles exist yet
-  if (!articles.length && !append) {
-    const news = await fetch('/api/news?limit=9').then(r=>r.json());
-    if (news.length) {
-      grid.innerHTML = news.map(n=>`
-        <a class="article tilt" href="${n.link}" target="_blank" rel="noopener">
-          <div class="article-img ${n.image_url?'has-cover':''}" ${n.image_url?`style="background-image:url('${n.image_url}');background-size:cover;background-position:center"`:''}>
-            ${!n.image_url?`<div class="article-img-label">[ liverpool news ]</div>`:''}
-            <span class="article-cat">${n.source}</span>
-            <span class="article-read">↗ LINK</span>
-          </div>
-          <div class="article-body">
-            <div class="article-date">${timeAgo(n.pub_date)} · ${n.source.toUpperCase()}</div>
-            <h3>${esc(n.title)}</h3>
-            <p>${esc((n.description||'').slice(0,140))}…</p>
-            <div class="article-foot">
-              <div class="article-author"><div class="article-mini-avatar">L</div>Liverpool News</div>
-              <div class="article-stats"><span style="color:var(--gold);font-size:11px;">Read →</span></div>
-            </div>
-          </div>
-        </a>`).join('');
-      btn.style.display = 'none';
-      initTilt(); revealObserver();
-    } else {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">Content loading… Check back shortly.</div>';
-    }
-    return;
-  }
-
+  if (!articles.length && !append) { grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">No articles published yet.<br>Check back soon!</div>'; return; }
   grid.innerHTML += articles.map(a=>`
     <a class="article tilt" href="/article/${a.slug}">
-      <div class="article-img ${a.cover_url?'has-cover':''}" ${a.cover_url?`style="background-image:url('${a.cover_url}');background-size:cover;background-position:center"`:''}>
+      <div class="article-img ${a.cover_url?'has-cover':''}" ${a.cover_url?`style="background-image:url('${a.cover_url}')"`:''}>
         ${!a.cover_url?`<div class="article-img-label">[ ${a.category.toLowerCase()} ]</div>`:''}
         <span class="article-cat">${a.category}</span>
         <span class="article-read">${a.read_time} MIN</span>
