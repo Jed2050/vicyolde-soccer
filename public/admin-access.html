@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Admin Access</title>
+<style>
+  body { background:#0a0805; color:#f4ecd6; font-family:monospace; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; flex-direction:column; gap:20px; }
+  .msg { font-size:16px; letter-spacing:.2em; }
+  .dot { display:inline-block; animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+</style>
+</head>
+<body>
+<div class="msg"><span class="dot">⚽</span> Connecting to dashboard…</div>
+<div id="status" style="font-size:12px;color:#d4a836;letter-spacing:.15em;"></div>
+<script>
+(async () => {
+  const st = document.getElementById('status');
+  try {
+    st.textContent = 'Authenticating…';
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'VICYOLDE', password: 'Vicyolde2026!' })
+    });
+    const data = await r.json();
+    if (!r.ok) { st.textContent = 'ERROR: ' + data.error; st.style.color='#ff6680'; return; }
+    localStorage.setItem('vs_token', data.token);
+    localStorage.setItem('vs_user', JSON.stringify(data.user));
+    st.textContent = 'Success! Redirecting…';
+    setTimeout(() => location.href = '/dashboard', 500);
+  } catch(e) {
+    st.textContent = 'ERROR: ' + e.message + ' — Is the server running?';
+    st.style.color = '#ff6680';
+  }
+})();
+</script>
+</body>
+</html>

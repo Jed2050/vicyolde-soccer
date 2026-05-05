@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VICYOLDE SOCCER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#0a0805;--black-2:#14110a;--black-3:#1d1810;--gold:#d4a836;--gold-bright:#f5cf5c;--gold-deep:#8a6818;--gold-glow:rgba(245,207,92,0.45);--cream:#f4ecd6;--red:#c8102e;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--black);color:var(--cream);font-family:'Inter',sans-serif;overflow-x:hidden;scroll-behavior:smooth;}
+::selection{background:var(--gold);color:var(--black);}
+.bg-grad{position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(212,168,54,.18),transparent 55%),#0a0805;}
+nav.top{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;backdrop-filter:blur(14px);background:linear-gradient(180deg,rgba(10,8,5,.9),rgba(10,8,5,.6));border-bottom:1px solid rgba(212,168,54,.15);}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;}
+.brand-crest{width:36px;height:40px;filter:drop-shadow(0 0 10px var(--gold-glow));}
+.brand-text .lockup{font-family:'Cinzel',serif;font-weight:800;font-size:15px;letter-spacing:.18em;background:linear-gradient(180deg,#f5cf5c,#d4a836 50%,#8a6818);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.brand-text .sub{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.4em;color:rgba(244,236,214,.4);margin-top:3px;}
+.nav-actions{display:flex;gap:12px;align-items:center;}
+.btn-gold{padding:8px 18px;background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:var(--black);border:none;border-radius:999px;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:transform .2s;}
+.btn-gold:hover{transform:translateY(-1px);}
+.btn-ghost{padding:8px 18px;background:transparent;color:var(--cream);border:1px solid rgba(244,236,214,.2);border-radius:999px;font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-bright);}
+.icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(212,168,54,.3);background:rgba(244,236,214,.04);color:var(--gold-bright);display:grid;place-items:center;cursor:pointer;transition:all .25s;}
+.icon-btn:hover{border-color:var(--gold);background:rgba(212,168,54,.12);}
+.user-chip{display:flex;align-items:center;gap:10px;font-size:13px;}
+.av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-deep));display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;font-size:12px;color:var(--black);}
+
+/* ARTICLE HEADER */
+.article-header{padding:140px 40px 60px;max-width:900px;margin:0 auto;position:relative;z-index:2;}
+.art-meta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--gold);display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+.art-meta .line{width:50px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+.art-cat{padding:5px 12px;border-radius:3px;background:rgba(212,168,54,.12);border:1px solid rgba(212,168,54,.4);color:var(--gold-bright);font-size:10px;letter-spacing:.25em;}
+.article-title{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(36px,5vw,68px);line-height:1;letter-spacing:-.02em;margin-bottom:24px;color:var(--cream);}
+.article-excerpt{font-size:20px;line-height:1.6;color:rgba(244,236,214,.7);max-width:720px;font-weight:300;margin-bottom:36px;}
+.art-byline{display:flex;align-items:center;gap:24px;padding:24px 0;border-top:1px solid rgba(212,168,54,.15);border-bottom:1px solid rgba(212,168,54,.15);flex-wrap:wrap;}
+.byline-author{display:flex;align-items:center;gap:12px;}
+.byline-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-deep));display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;font-size:16px;color:var(--black);}
+.byline-name{font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:var(--gold-bright);}
+.byline-role{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,236,214,.45);letter-spacing:.2em;margin-top:3px;}
+.byline-stats{display:flex;gap:28px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(244,236,214,.5);letter-spacing:.1em;margin-left:auto;}
+
+/* COVER */
+.article-cover{width:100%;max-width:1200px;margin:0 auto;padding:0 40px 60px;position:relative;z-index:2;}
+.article-cover img{width:100%;border-radius:12px;max-height:520px;object-fit:cover;border:1px solid rgba(212,168,54,.2);}
+
+/* BODY */
+.article-body-wrap{max-width:760px;margin:0 auto;padding:0 40px 80px;position:relative;z-index:2;}
+.article-body h2{font-family:'Cinzel',serif;font-weight:700;font-size:30px;color:var(--gold-bright);margin:48px 0 20px;line-height:1.1;}
+.article-body h3{font-family:'Cinzel',serif;font-weight:600;font-size:22px;color:var(--cream);margin:36px 0 16px;line-height:1.2;}
+.article-body p{margin-bottom:22px;line-height:1.8;color:rgba(244,236,214,.85);font-size:17px;font-weight:300;}
+.article-body strong{color:var(--gold-bright);font-weight:600;}
+.article-body em{font-style:italic;color:rgba(244,236,214,.9);}
+.article-body blockquote{border-left:3px solid var(--gold);padding:18px 28px;margin:32px 0;background:rgba(212,168,54,.06);border-radius:0 8px 8px 0;}
+.article-body blockquote p{font-size:18px;font-style:italic;color:rgba(244,236,214,.9);}
+.article-body ul,.article-body ol{margin:20px 0 20px 28px;}
+.article-body li{margin-bottom:10px;line-height:1.7;color:rgba(244,236,214,.8);}
+.article-body code{font-family:'JetBrains Mono',monospace;background:rgba(244,236,214,.06);padding:2px 7px;border-radius:4px;font-size:.9em;}
+.article-body img{max-width:100%;border-radius:8px;margin:28px 0;}
+.article-body hr{border:none;border-top:1px solid rgba(212,168,54,.2);margin:40px 0;}
+
+/* COMMENTS */
+.comments-section{max-width:860px;margin:0 auto;padding:0 40px 100px;position:relative;z-index:2;}
+.sect-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;}
+.sect-title{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(28px,3vw,42px);margin-bottom:40px;padding-bottom:20px;border-bottom:1px solid rgba(212,168,54,.18);}
+
+/* composer */
+.composer{background:linear-gradient(180deg,var(--black-3),var(--black-2));border:1px solid rgba(212,168,54,.3);border-radius:10px;padding:22px;margin-bottom:24px;transition:border-color .3s,box-shadow .3s;}
+.composer:focus-within{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,168,54,.08);}
+.composer-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.composer-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2a2114,#14110a);border:1px solid rgba(212,168,54,.4);display:grid;place-items:center;color:var(--gold);font-family:'Cinzel',serif;font-weight:700;font-size:14px;}
+.composer-name{font-size:13px;font-weight:500;}
+.composer-name strong{color:var(--gold-bright);}
+.composer textarea{width:100%;background:transparent;border:none;outline:none;color:var(--cream);resize:none;font-family:'Inter',sans-serif;font-size:15px;min-height:60px;line-height:1.5;}
+.composer textarea::placeholder{color:rgba(244,236,214,.35);}
+.composer-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:14px;border-top:1px solid rgba(212,168,54,.12);}
+.post-btn{padding:9px 22px;background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:var(--black);border:none;border-radius:6px;font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:transform .2s;}
+.post-btn:hover{transform:translateY(-1px);}
+.auth-prompt{padding:18px 24px;background:rgba(212,168,54,.06);border:1px solid rgba(212,168,54,.2);border-radius:10px;text-align:center;font-size:14px;color:rgba(244,236,214,.7);margin-bottom:24px;}
+.auth-prompt a{color:var(--gold-bright);text-decoration:none;font-weight:600;}
+
+/* sort tabs */
+.sort-tabs{display:flex;gap:8px;margin-bottom:22px;}
+.sort-tabs button{padding:7px 14px;background:transparent;border:1px solid rgba(212,168,54,.2);color:rgba(244,236,214,.5);border-radius:999px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;transition:all .2s;}
+.sort-tabs button.active{background:rgba(212,168,54,.12);border-color:rgba(212,168,54,.5);color:var(--gold-bright);}
+
+/* comments */
+.comments-list{display:flex;flex-direction:column;gap:20px;}
+.comment{display:flex;gap:14px;padding:18px;background:rgba(244,236,214,.02);border-radius:10px;border-left:2px solid transparent;transition:all .25s;}
+.comment:hover{background:rgba(244,236,214,.04);border-left-color:var(--gold);}
+.c-av{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:var(--black);}
+.c-body{flex:1;min-width:0;}
+.c-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+.c-name{font-weight:600;font-size:14px;}
+.c-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:rgba(212,168,54,.18);color:var(--gold-bright);border:1px solid rgba(212,168,54,.3);}
+.c-badge.author{background:rgba(200,16,46,.18);color:#ff6680;border-color:rgba(200,16,46,.4);}
+.c-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(244,236,214,.35);letter-spacing:.08em;}
+.c-text{font-size:14px;line-height:1.6;color:rgba(244,236,214,.8);margin-bottom:12px;}
+.c-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.react-bar{display:flex;gap:6px;}
+.react-btn{padding:4px 10px;border-radius:999px;background:rgba(244,236,214,.04);border:1px solid rgba(212,168,54,.15);cursor:pointer;font-size:12px;color:rgba(244,236,214,.7);display:flex;align-items:center;gap:5px;transition:all .2s;font-family:'JetBrains Mono',monospace;}
+.react-btn:hover{background:rgba(212,168,54,.1);border-color:rgba(212,168,54,.4);color:var(--gold-bright);transform:translateY(-1px) scale(1.05);}
+.react-btn.active{background:rgba(212,168,54,.18);border-color:var(--gold);color:var(--gold-bright);}
+.c-link-btn{background:none;border:none;cursor:pointer;color:rgba(244,236,214,.5);font-size:12px;padding:4px 10px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+.c-link-btn:hover{color:var(--gold);}
+.c-delete-btn{background:none;border:none;cursor:pointer;color:rgba(200,16,46,.5);font-size:12px;padding:4px 10px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;}
+.c-delete-btn:hover{color:#ff6680;}
+.c-replies{margin-top:14px;padding-left:16px;border-left:1px solid rgba(212,168,54,.15);display:flex;flex-direction:column;gap:14px;}
+.reply-form{margin-top:12px;background:rgba(244,236,214,.02);border:1px solid rgba(212,168,54,.18);border-radius:8px;padding:14px;display:none;}
+.reply-form textarea{width:100%;background:transparent;border:none;outline:none;color:var(--cream);resize:none;font-family:'Inter',sans-serif;font-size:14px;min-height:50px;}
+.reply-form-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;}
+.burst{position:absolute;pointer-events:none;font-size:18px;animation:burst 1s ease-out forwards;}
+@keyframes burst{0%{opacity:1;transform:translateY(0) scale(.8)}100%{opacity:0;transform:translateY(-50px) scale(1.4)}}
+
+/* RELATED */
+.related{max-width:1100px;margin:0 auto;padding:0 40px 80px;position:relative;z-index:2;}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px;}
+.related-card{background:var(--black-2);border:1px solid rgba(212,168,54,.15);border-radius:8px;padding:24px;text-decoration:none;display:block;transition:all .25s;}
+.related-card:hover{border-color:rgba(212,168,54,.4);transform:translateY(-2px);}
+.related-cat{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.related-title{font-family:'Cinzel',serif;font-weight:600;font-size:16px;line-height:1.3;color:var(--cream);transition:color .2s;}
+.related-card:hover .related-title{color:var(--gold-bright);}
+.related-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,236,214,.4);margin-top:10px;}
+
+@media(max-width:700px){nav.top{padding:14px 20px;}.article-header,.article-cover,.article-body-wrap,.comments-section,.related{padding-left:20px;padding-right:20px;}.article-title{font-size:32px;}.related-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="bg-grad"></div>
+
+<!-- CREST -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+  <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="50%" stop-color="#d4a836"/><stop offset="100%" stop-color="#8a6818"/></linearGradient>
+  <radialGradient id="ballGrad" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="60%" stop-color="#a87c1c"/><stop offset="100%" stop-color="#3a2c0e"/></radialGradient>
+  <filter id="goldGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<symbol id="crest" viewBox="0 0 100 110">
+  <path d="M50 4 L92 16 L92 56 Q92 88 50 106 Q8 88 8 56 L8 16 Z" fill="url(#goldGrad)" stroke="#f5cf5c" stroke-width=".8" filter="url(#goldGlow)"/>
+  <path d="M50 10 L86 20 L86 56 Q86 84 50 100 Q14 84 14 56 L14 20 Z" fill="#0a0805" stroke="#d4a836" stroke-width=".6"/>
+  <polygon points="50,18 53,26 61,26 55,31 57,39 50,34 43,39 45,31 39,26 47,26" fill="url(#goldGrad)"/>
+  <circle cx="50" cy="62" r="16" fill="url(#ballGrad)" stroke="#f5cf5c" stroke-width=".6"/>
+  <polygon points="50,52 56,57 53,64 47,64 44,57" fill="#0a0805"/>
+  <rect x="20" y="84" width="60" height="11" rx="1" fill="#0a0805" stroke="#d4a836" stroke-width=".4"/>
+</symbol>
+</svg>
+
+<!-- NAV -->
+<nav class="top">
+  <a class="brand" href="/"><svg class="brand-crest" viewBox="0 0 100 110"><use href="#crest"/></svg>
+    <div class="brand-text"><div class="lockup">VICYOLDE SOCCER</div><div class="sub">THE KOP CHRONICLE</div></div>
+  </a>
+  <div class="nav-actions" id="navActions"></div>
+</nav>
+
+<!-- ARTICLE HEADER -->
+<div class="article-header" id="articleHeader">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(244,236,214,.5);letter-spacing:.2em">Loading article…</div>
+</div>
+
+<!-- COVER IMAGE -->
+<div class="article-cover" id="articleCover" style="display:none">
+  <img id="coverImg" src="" alt=""/>
+</div>
+
+<!-- ARTICLE BODY -->
+<div class="article-body-wrap">
+  <div class="article-body" id="articleBody"></div>
+</div>
+
+<!-- COMMENTS -->
+<div class="comments-section" id="comments">
+  <div class="sect-label">THE KOP · DISCUSSION</div>
+  <div class="sect-title" id="commentTitle">Comments</div>
+  <div id="composerArea"></div>
+  <div class="sort-tabs" id="sortTabs">
+    <button class="active" data-sort="new">New</button>
+    <button data-sort="top">Top Reactions</button>
+  </div>
+  <div class="comments-list" id="commentsList">
+    <div style="text-align:center;padding:40px;color:rgba(244,236,214,.4);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em">Loading comments…</div>
+  </div>
+</div>
+
+<!-- RELATED -->
+<div class="related" id="relatedSection" style="display:none">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">MORE ANALYSIS</div>
+  <h2 style="font-family:'Cinzel',serif;font-weight:700;font-size:32px;margin-bottom:32px;border-bottom:1px solid rgba(212,168,54,.15);padding-bottom:20px;">Related Articles</h2>
+  <div class="related-grid" id="relatedGrid"></div>
+</div>
+
+<script>
+const token = localStorage.getItem('vs_token');
+const user  = (() => { try { return JSON.parse(localStorage.getItem('vs_user')); } catch { return null; } })();
+let currentArticle = null;
+let allComments = [];
+let sortMode = 'new';
+
+// Nav
+(function(){
+  const el = document.getElementById('navActions');
+  if (user) {
+    el.innerHTML = `
+      <div class="user-chip"><div class="av">${user.username[0].toUpperCase()}</div><span style="color:var(--gold-bright);font-weight:600">${user.username}</span></div>
+      ${user.role==='admin'?'<a class="btn-gold" href="/dashboard" style="font-size:11px">Dashboard</a>':''}
+      <button class="icon-btn" onclick="localStorage.removeItem('vs_token');localStorage.removeItem('vs_user');location.reload()" title="Sign out">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14 5-5-5-5m5 5H9"/></svg>
+      </button>`;
+  } else {
+    el.innerHTML = `<a class="btn-gold" href="/login">Join Discussion</a>`;
+  }
+})();
+
+// Load article
+const slug = location.pathname.replace('/article/','').split('/')[0];
+if (!slug) location.href = '/';
+
+async function loadArticle() {
+  try {
+    const a = await fetch(`/api/articles/${slug}`).then(r => { if(!r.ok) throw new Error(); return r.json(); });
+    currentArticle = a;
+    document.title = a.title + ' — VICYOLDE SOCCER';
+
+    document.getElementById('articleHeader').innerHTML = `
+      <div class="art-meta">
+        <span class="line"></span>
+        <span>${fmtDate(a.created_at)}</span>
+        <span class="art-cat">${a.category}</span>
+        <span style="color:rgba(244,236,214,.5)">${a.read_time} MIN READ</span>
+      </div>
+      <h1 class="article-title">${esc(a.title)}</h1>
+      ${a.excerpt ? `<p class="article-excerpt">${esc(a.excerpt)}</p>` : ''}
+      <div class="art-byline">
+        <div class="byline-author">
+          <div class="byline-av">${a.author_name[0].toUpperCase()}</div>
+          <div><div class="byline-name">${esc(a.author_name)}</div><div class="byline-role">ANALYST · THE KOP CHRONICLE</div></div>
+        </div>
+        <div class="byline-stats">
+          <span>${a.comment_count} comments</span>
+          <a href="#comments" style="color:var(--gold);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:11px">Join discussion →</a>
+        </div>
+      </div>`;
+
+    if (a.cover_url) {
+      document.getElementById('coverImg').src = a.cover_url;
+      document.getElementById('articleCover').style.display = '';
+    }
+
+    document.getElementById('articleBody').innerHTML = a.content;
+
+    loadComments();
+    loadRelated(a.category, a.id);
+  } catch {
+    document.getElementById('articleHeader').innerHTML =
+      '<div style="color:rgba(244,236,214,.5);font-family:JetBrains Mono,monospace;text-align:center;padding:60px">Article not found. <a href="/" style="color:var(--gold)">← Back home</a></div>';
+  }
+}
+
+// Comments
+async function loadComments() {
+  const list = document.getElementById('commentsList');
+  const title = document.getElementById('commentTitle');
+  try {
+    allComments = await fetch(`/api/comments/${currentArticle.id}`).then(r => r.json());
+    title.textContent = `${allComments.length} Comment${allComments.length===1?'':'s'}`;
+    renderComments();
+    renderComposer();
+  } catch { list.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(244,236,214,.4)">Could not load comments.</div>'; }
+}
+
+function renderComments() {
+  const list = document.getElementById('commentsList');
+  let sorted = [...allComments];
+  if (sortMode === 'top') {
+    sorted.sort((a,b) => b.reactions.reduce((s,r)=>s+r.count,0) - a.reactions.reduce((s,r)=>s+r.count,0));
+  }
+  if (!sorted.length) {
+    list.innerHTML = '<div style="text-align:center;padding:60px;color:rgba(244,236,214,.4);font-family:JetBrains Mono,monospace;font-size:12px;letter-spacing:.2em;border:1px dashed rgba(212,168,54,.15);border-radius:8px">Be the first to comment on this analysis!</div>';
+    return;
+  }
+  list.innerHTML = sorted.map(c => renderComment(c, false)).join('');
+  bindCommentEvents();
+}
+
+function avatarColor(i) {
+  const cols = [
+    'linear-gradient(135deg,#f5cf5c,#8a6818)',
+    'linear-gradient(135deg,#c8102e,#6a0817)',
+    'linear-gradient(135deg,#c9b27e,#5c4a23)',
+    'linear-gradient(135deg,#e8b94e,#a87c1c)',
+  ];
+  return cols[Math.abs(i) % cols.length];
+}
+
+function renderComment(c, isReply) {
+  const idx = c.username.charCodeAt(0);
+  const reactions = c.reactions.map(r => {
+    const isActive = user ? '' : '';
+    return `<button class="react-btn" data-cid="${c.id}" data-emo="${r.emoji}" data-count="${r.count}">${r.emoji} <span>${r.count}</span></button>`;
+  }).join('');
+  const replies = (!isReply && c.replies?.length) ? `
+    <div class="c-replies">${c.replies.map(r => renderComment(r, true)).join('')}</div>` : '';
+  return `
+    <div class="comment" id="comment-${c.id}">
+      <div class="c-av" style="background:${avatarColor(idx)}">${c.username[0].toUpperCase()}</div>
+      <div class="c-body">
+        <div class="c-head">
+          <span class="c-name">${esc(c.username)}</span>
+          ${c.role==='admin'?'<span class="c-badge author">✍ AUTHOR</span>':''}
+          <span class="c-time">${timeAgo(c.created_at)}</span>
+        </div>
+        <div class="c-text">${esc(c.body)}</div>
+        <div class="c-actions">
+          <div class="react-bar">${reactions}</div>
+          ${user?`<button class="c-link-btn" data-reply="${c.id}">Reply</button>`:''}
+          ${(user && (user.id===c.user_id||user.role==='admin'))?`<button class="c-delete-btn" data-del="${c.id}">Delete</button>`:''}
+        </div>
+        ${!isReply?`<div class="reply-form" id="reply-form-${c.id}">
+          <textarea placeholder="Reply to ${esc(c.username)}…" id="reply-text-${c.id}"></textarea>
+          <div class="reply-form-foot">
+            <button class="btn-ghost" onclick="document.getElementById('reply-form-${c.id}').style.display='none'" style="font-size:11px;padding:7px 14px">Cancel</button>
+            <button class="post-btn" onclick="postReply(${c.id})" style="font-size:11px;padding:7px 14px">Post Reply</button>
+          </div>
+        </div>`:''}
+        ${replies}
+      </div>
+    </div>`;
+}
+
+function bindCommentEvents() {
+  document.querySelectorAll('[data-reply]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.reply;
+      const form = document.getElementById('reply-form-'+id);
+      form.style.display = form.style.display === 'none' || !form.style.display ? 'block' : 'none';
+    });
+  });
+  document.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Delete this comment?')) return;
+      const r = await fetch(`/api/comments/${btn.dataset.del}`, { method:'DELETE', headers:{ Authorization:'Bearer '+token } });
+      if (r.ok) loadComments();
+    });
+  });
+  document.querySelectorAll('.react-btn').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      if (!user) { location.href = '/login'; return; }
+      const { cid, emo } = btn.dataset;
+      const r = await fetch(`/api/comments/${cid}/react`, { method:'POST', headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}, body: JSON.stringify({emoji:emo}) });
+      if (r.ok) {
+        const data = await r.json();
+        const existing = data.reactions.find(x=>x.emoji===emo);
+        const span = btn.querySelector('span');
+        span.textContent = existing ? existing.count : 0;
+        btn.classList.toggle('active', data.active);
+        // burst
+        const burst = document.createElement('span');
+        burst.className = 'burst'; burst.textContent = emo;
+        const rr = btn.getBoundingClientRect();
+        burst.style.cssText = `left:${rr.left+rr.width/2-10}px;top:${rr.top+scrollY-10}px;position:absolute;`;
+        document.body.appendChild(burst);
+        setTimeout(()=>burst.remove(),1000);
+      }
+    });
+  });
+}
+
+function renderComposer() {
+  const area = document.getElementById('composerArea');
+  if (!user) {
+    area.innerHTML = `<div class="auth-prompt">
+      <a href="/login">Sign in</a> or <a href="/login?tab=register">create an account</a> to join the discussion.
+    </div>`;
+    return;
+  }
+  area.innerHTML = `
+    <div class="composer">
+      <div class="composer-head">
+        <div class="composer-av">${user.username[0].toUpperCase()}</div>
+        <div class="composer-name">Posting as <strong>${esc(user.username)}</strong></div>
+      </div>
+      <textarea id="newCommentText" placeholder="Drop your tactical take… what did you see?"></textarea>
+      <div class="composer-foot">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,236,214,.35);letter-spacing:.15em">TACTICS OVER TRIBALISM.</span>
+        <button class="post-btn" onclick="postComment()">Post Comment</button>
+      </div>
+    </div>`;
+}
+
+async function postComment() {
+  const text = document.getElementById('newCommentText').value.trim();
+  if (!text) return;
+  const r = await fetch(`/api/comments/${currentArticle.id}`, {
+    method:'POST', headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+    body: JSON.stringify({body:text})
+  });
+  if (r.ok) { document.getElementById('newCommentText').value=''; loadComments(); }
+  else { const e = await r.json(); alert(e.error||'Error'); }
+}
+
+async function postReply(parentId) {
+  const ta = document.getElementById('reply-text-'+parentId);
+  const text = ta.value.trim();
+  if (!text) return;
+  const r = await fetch(`/api/comments/${currentArticle.id}`, {
+    method:'POST', headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+    body: JSON.stringify({body:text, parent_id:parentId})
+  });
+  if (r.ok) { ta.value=''; document.getElementById('reply-form-'+parentId).style.display='none'; loadComments(); }
+}
+
+// Sort tabs
+document.getElementById('sortTabs').addEventListener('click', e => {
+  if (!e.target.dataset.sort) return;
+  sortMode = e.target.dataset.sort;
+  document.querySelectorAll('.sort-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.sort===sortMode));
+  renderComments();
+});
+
+// Related
+async function loadRelated(category, excludeId) {
+  try {
+    const { articles } = await fetch(`/api/articles?category=${category}&limit=4`).then(r=>r.json());
+    const filtered = articles.filter(a=>a.id!==excludeId).slice(0,3);
+    if (!filtered.length) return;
+    const sec = document.getElementById('relatedSection');
+    document.getElementById('relatedGrid').innerHTML = filtered.map(a=>`
+      <a class="related-card" href="/article/${a.slug}">
+        <div class="related-cat">${a.category}</div>
+        <div class="related-title">${esc(a.title)}</div>
+        <div class="related-meta">${fmtDate(a.created_at)} · ${a.read_time} MIN</div>
+      </a>`).join('');
+    sec.style.display='';
+  } catch {}
+}
+
+// Helpers
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+function fmtDate(d){return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();}
+function timeAgo(d){const s=(Date.now()-new Date(d))/1000;if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+
+// Scroll to comments if hash
+if (location.hash === '#comments') setTimeout(()=>document.getElementById('comments').scrollIntoView({behavior:'smooth'}),800);
+
+loadArticle();
+</script>
+</body>
+</html>

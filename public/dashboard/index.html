@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard — VICYOLDE SOCCER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#0a0805;--black-2:#14110a;--black-3:#1d1810;--gold:#d4a836;--gold-bright:#f5cf5c;--gold-deep:#8a6818;--gold-glow:rgba(245,207,92,0.35);--cream:#f4ecd6;--red:#c8102e;--sidebar:240px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--black);color:var(--cream);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--black-2);border-right:1px solid rgba(212,168,54,.15);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;overflow-y:auto;z-index:100;}
+.sidebar-brand{padding:24px 20px;border-bottom:1px solid rgba(212,168,54,.12);display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;}
+.sidebar-crest{width:32px;height:36px;filter:drop-shadow(0 0 8px var(--gold-glow));}
+.sidebar-name{font-family:'Cinzel',serif;font-weight:800;font-size:13px;letter-spacing:.14em;background:linear-gradient(180deg,#f5cf5c,#d4a836 50%,#8a6818);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;}
+.sidebar-sub{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.3em;color:rgba(244,236,214,.35);margin-top:3px;}
+.sidebar-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.3em;color:rgba(244,236,214,.3);text-transform:uppercase;padding:20px 20px 8px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(244,236,214,.55);cursor:pointer;transition:all .2s;border-left:2px solid transparent;font-size:14px;font-weight:500;}
+.nav-item svg{opacity:.6;flex-shrink:0;}
+.nav-item:hover{background:rgba(212,168,54,.05);color:var(--cream);border-left-color:rgba(212,168,54,.3);}
+.nav-item.active{background:rgba(212,168,54,.08);color:var(--gold-bright);border-left-color:var(--gold);}
+.nav-item.active svg{opacity:1;}
+.sidebar-footer{margin-top:auto;padding:20px;border-top:1px solid rgba(212,168,54,.12);}
+.sidebar-user{display:flex;align-items:center;gap:10px;font-size:13px;}
+.sidebar-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-deep));display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;font-size:13px;color:var(--black);flex-shrink:0;}
+.sidebar-uname{font-weight:600;color:var(--gold-bright);font-size:13px;}
+.sidebar-role{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(244,236,214,.4);letter-spacing:.15em;}
+.logout-btn{display:flex;align-items:center;gap:8px;margin-top:12px;padding:9px 14px;border:1px solid rgba(212,168,54,.2);border-radius:6px;color:rgba(244,236,214,.55);cursor:pointer;font-size:12px;background:none;width:100%;transition:all .2s;}
+.logout-btn:hover{border-color:var(--red);color:#ff6680;}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;min-height:100vh;}
+.topbar{background:var(--black-2);border-bottom:1px solid rgba(212,168,54,.12);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar h1{font-family:'Cinzel',serif;font-weight:700;font-size:20px;}
+.topbar-right{display:flex;gap:12px;align-items:center;}
+.page{padding:32px;display:none;}
+.page.active{display:block;}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px;}
+.stat-card{background:var(--black-2);border:1px solid rgba(212,168,54,.15);border-radius:10px;padding:24px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(212,168,54,.1),transparent 70%);}
+.stat-card .n{font-family:'Cinzel',serif;font-weight:700;font-size:36px;color:var(--gold-bright);line-height:1;}
+.stat-card .l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:rgba(244,236,214,.5);margin-top:8px;text-transform:uppercase;}
+.stat-card .ic{position:absolute;bottom:16px;right:16px;opacity:.15;}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:6px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;border:none;display:inline-flex;align-items:center;gap:8px;letter-spacing:.05em;}
+.btn-primary{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:var(--black);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px -6px var(--gold-glow);}
+.btn-outline{background:transparent;color:var(--gold);border:1px solid rgba(212,168,54,.4);}
+.btn-outline:hover{background:rgba(212,168,54,.08);border-color:var(--gold);}
+.btn-red{background:transparent;color:#ff6680;border:1px solid rgba(200,16,46,.3);}
+.btn-red:hover{background:rgba(200,16,46,.1);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-xs{padding:4px 10px;font-size:11px;}
+
+/* TABLE */
+.table-wrap{background:var(--black-2);border:1px solid rgba(212,168,54,.12);border-radius:10px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:rgba(244,236,214,.4);text-transform:uppercase;padding:14px 20px;text-align:left;border-bottom:1px solid rgba(212,168,54,.1);background:rgba(212,168,54,.02);}
+td{padding:14px 20px;font-size:14px;color:rgba(244,236,214,.85);border-bottom:1px solid rgba(212,168,54,.06);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(212,168,54,.03);}
+.badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;padding:3px 8px;border-radius:3px;text-transform:uppercase;}
+.badge-pub{background:rgba(80,200,80,.12);color:#5cd65c;border:1px solid rgba(80,200,80,.3);}
+.badge-draft{background:rgba(212,168,54,.1);color:var(--gold);border:1px solid rgba(212,168,54,.25);}
+.badge-feat{background:rgba(245,207,92,.12);color:var(--gold-bright);border:1px solid rgba(245,207,92,.3);}
+.badge-cat{background:rgba(212,168,54,.08);color:rgba(244,236,214,.7);border:1px solid rgba(212,168,54,.15);}
+
+/* EDITOR PANEL */
+.editor-panel{background:var(--black-2);border:1px solid rgba(212,168,54,.15);border-radius:12px;padding:0;overflow:hidden;}
+.editor-header{padding:20px 28px;border-bottom:1px solid rgba(212,168,54,.12);display:flex;align-items:center;justify-content:space-between;}
+.editor-header h2{font-family:'Cinzel',serif;font-weight:700;font-size:18px;}
+.editor-body{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.editor-full{grid-column:1/-1;}
+.field{margin-bottom:0;}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.field input,.field textarea,.field select{width:100%;background:rgba(10,8,5,.5);border:1px solid rgba(212,168,54,.18);border-radius:6px;padding:10px 14px;color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.field input::placeholder,.field textarea::placeholder{color:rgba(244,236,214,.3);}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,54,.08);}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23d4a836' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.field select option{background:#1d1810;}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.toggle-row{display:flex;gap:24px;align-items:center;flex-wrap:wrap;}
+.toggle-item{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.toggle-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;}
+.toggle-item label{font-size:14px;color:rgba(244,236,214,.8);cursor:pointer;}
+
+/* RICH TEXT EDITOR */
+.rte-wrap{border:1px solid rgba(212,168,54,.18);border-radius:6px;overflow:hidden;}
+.rte-wrap:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,54,.08);}
+.rte-toolbar{display:flex;gap:4px;padding:10px 12px;background:rgba(10,8,5,.4);border-bottom:1px solid rgba(212,168,54,.1);flex-wrap:wrap;}
+.rte-btn{padding:5px 10px;background:transparent;border:1px solid rgba(212,168,54,.15);border-radius:4px;color:rgba(244,236,214,.65);cursor:pointer;font-size:12px;font-family:'JetBrains Mono',monospace;transition:all .15s;display:flex;align-items:center;gap:4px;}
+.rte-btn:hover{background:rgba(212,168,54,.1);border-color:rgba(212,168,54,.4);color:var(--gold-bright);}
+.rte-btn b{font-weight:700;}
+.rte-editor{min-height:400px;padding:20px;color:var(--cream);font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;outline:none;background:transparent;}
+.rte-editor:empty::before{content:attr(data-placeholder);color:rgba(244,236,214,.3);}
+.rte-editor h2{font-family:'Cinzel',serif;color:var(--gold-bright);margin:28px 0 14px;font-size:26px;}
+.rte-editor h3{font-family:'Cinzel',serif;color:var(--cream);margin:22px 0 12px;font-size:20px;}
+.rte-editor p{margin-bottom:16px;}
+.rte-editor blockquote{border-left:3px solid var(--gold);padding:14px 22px;margin:20px 0;background:rgba(212,168,54,.05);border-radius:0 6px 6px 0;}
+.rte-editor strong{color:var(--gold-bright);}
+.rte-editor ul,.rte-editor ol{margin:16px 0 16px 24px;}
+.rte-editor li{margin-bottom:8px;}
+.rte-editor code{font-family:'JetBrains Mono',monospace;background:rgba(244,236,214,.06);padding:2px 6px;border-radius:3px;}
+.rte-count{padding:8px 14px;background:rgba(10,8,5,.3);border-top:1px solid rgba(212,168,54,.08);font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,236,214,.35);letter-spacing:.1em;text-align:right;}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--black-2);border:1px solid rgba(212,168,54,.25);border-radius:12px;width:100%;max-width:880px;max-height:90vh;overflow-y:auto;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:14px 22px;border-radius:8px;font-size:14px;z-index:300;transform:translateY(100px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:rgba(80,200,80,.15);border:1px solid rgba(80,200,80,.4);color:#5cd65c;}
+.toast.error{background:rgba(200,16,46,.15);border:1px solid rgba(200,16,46,.4);color:#ff6680;}
+
+/* MISC */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.section-head h2{font-family:'Cinzel',serif;font-weight:700;font-size:22px;}
+.empty-state{text-align:center;padding:60px;color:rgba(244,236,214,.35);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;line-height:2;}
+.cover-preview{width:100%;height:120px;border-radius:6px;object-fit:cover;margin-top:8px;border:1px solid rgba(212,168,54,.15);display:none;}
+.search-input{background:rgba(10,8,5,.5);border:1px solid rgba(212,168,54,.18);border-radius:6px;padding:8px 14px;color:var(--cream);font-size:14px;outline:none;width:240px;}
+.search-input:focus{border-color:var(--gold);}
+.search-input::placeholder{color:rgba(244,236,214,.3);}
+.news-item{display:flex;gap:16px;padding:16px 20px;border-bottom:1px solid rgba(212,168,54,.06);align-items:flex-start;}
+.news-item:last-child{border-bottom:none;}
+.news-item img{width:80px;height:54px;object-fit:cover;border-radius:4px;flex-shrink:0;background:var(--black-3);}
+.news-item-body{flex:1;min-width:0;}
+.news-item-source{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px;}
+.news-item-title{font-size:14px;font-weight:500;line-height:1.4;margin-bottom:4px;}
+.news-item-title a{color:var(--cream);text-decoration:none;}
+.news-item-title a:hover{color:var(--gold-bright);}
+.news-item-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,236,214,.35);letter-spacing:.08em;}
+
+@media(max-width:900px){.editor-body{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:700px){.sidebar{display:none;}.main{margin-left:0;}.page{padding:20px;}.stats-grid{grid-template-columns:1fr 1fr;}.row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- CREST SVG -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+  <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="50%" stop-color="#d4a836"/><stop offset="100%" stop-color="#8a6818"/></linearGradient>
+  <radialGradient id="ballGrad" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="60%" stop-color="#a87c1c"/><stop offset="100%" stop-color="#3a2c0e"/></radialGradient>
+  <filter id="goldGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<symbol id="crest" viewBox="0 0 100 110">
+  <path d="M50 4 L92 16 L92 56 Q92 88 50 106 Q8 88 8 56 L8 16 Z" fill="url(#goldGrad)" stroke="#f5cf5c" stroke-width=".8" filter="url(#goldGlow)"/>
+  <path d="M50 10 L86 20 L86 56 Q86 84 50 100 Q14 84 14 56 L14 20 Z" fill="#0a0805" stroke="#d4a836" stroke-width=".6"/>
+  <polygon points="50,18 53,26 61,26 55,31 57,39 50,34 43,39 45,31 39,26 47,26" fill="url(#goldGrad)"/>
+  <circle cx="50" cy="62" r="16" fill="url(#ballGrad)" stroke="#f5cf5c" stroke-width=".6"/>
+  <polygon points="50,52 56,57 53,64 47,64 44,57" fill="#0a0805"/>
+  <rect x="20" y="84" width="60" height="11" rx="1" fill="#0a0805" stroke="#d4a836" stroke-width=".4"/>
+</symbol>
+</svg>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a class="sidebar-brand" href="/" target="_blank">
+    <svg class="sidebar-crest" viewBox="0 0 100 110"><use href="#crest"/></svg>
+    <div><div class="sidebar-name">VICYOLDE SOCCER</div><div class="sidebar-sub">Admin Dashboard</div></div>
+  </a>
+
+  <div class="sidebar-label">Content</div>
+  <div class="nav-item active" onclick="goPage('overview')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Overview
+  </div>
+  <div class="nav-item" onclick="goPage('articles')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Articles
+  </div>
+  <div class="nav-item" onclick="goPage('new-article')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Article
+  </div>
+
+  <div class="sidebar-label">Community</div>
+  <div class="nav-item" onclick="goPage('comments')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Comments
+  </div>
+  <div class="nav-item" onclick="goPage('members')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Members
+  </div>
+
+  <div class="sidebar-label">Data</div>
+  <div class="nav-item" onclick="goPage('news')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6z"/></svg>
+    Liverpool News
+  </div>
+  <div class="nav-item" onclick="goPage('ai-writer')" style="background:linear-gradient(90deg,rgba(212,168,54,.06),transparent);">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+    <span style="background:linear-gradient(90deg,#f5cf5c,#d4a836);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">AI Writer ✦</span>
+  </div>
+
+  <div class="sidebar-label">Account</div>
+  <div class="nav-item" onclick="goPage('settings')">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Settings
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-av" id="sidebarAv">V</div>
+      <div><div class="sidebar-uname" id="sidebarName">VICYOLDE</div><div class="sidebar-role">ADMIN</div></div>
+    </div>
+    <button class="logout-btn" onclick="logout()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14 5-5-5-5m5 5H9"/></svg>
+      Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <div class="topbar">
+    <h1 id="pageTitle">Overview</h1>
+    <div class="topbar-right">
+      <a href="/" target="_blank" class="btn btn-outline btn-sm">← View Blog</a>
+      <button class="btn btn-primary btn-sm" onclick="goPage('new-article')">+ New Article</button>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="page active" id="page-overview">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="n" id="ovArticles">–</div><div class="l">Published Articles</div>
+        <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+      </div>
+      <div class="stat-card">
+        <div class="n" id="ovComments">–</div><div class="l">Total Comments</div>
+        <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      </div>
+      <div class="stat-card">
+        <div class="n" id="ovMembers">–</div><div class="l">Members</div>
+        <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div>
+      </div>
+      <div class="stat-card">
+        <div class="n" id="ovNews">–</div><div class="l">News Items</div>
+        <div class="ic"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg></div>
+      </div>
+    </div>
+    <div style="background:var(--black-2);border:1px solid rgba(212,168,54,.12);border-radius:10px;padding:24px;">
+      <h3 style="font-family:'Cinzel',serif;font-size:16px;margin-bottom:20px;color:var(--gold-bright)">Quick Actions</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="goPage('new-article')">+ Write New Article</button>
+        <button class="btn btn-outline" onclick="refreshNews()">⟳ Refresh Liverpool News</button>
+        <button class="btn btn-outline" onclick="goPage('articles')">Manage Articles</button>
+        <button class="btn btn-outline" onclick="goPage('comments')">Moderate Comments</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLES LIST -->
+  <div class="page" id="page-articles">
+    <div class="section-head">
+      <h2>Articles</h2>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <input class="search-input" type="text" placeholder="Search articles…" oninput="filterArticles(this.value)"/>
+        <button class="btn btn-primary" onclick="goPage('new-article')">+ New Article</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Title</th><th>Category</th><th>Status</th><th>Comments</th><th>Date</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="articlesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- NEW / EDIT ARTICLE -->
+  <div class="page" id="page-new-article">
+    <div class="section-head">
+      <h2 id="editorTitle">New Article</h2>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-outline" onclick="goPage('articles')">← Cancel</button>
+        <button class="btn btn-outline" onclick="saveArticle(false)">Save Draft</button>
+        <button class="btn btn-primary" onclick="saveArticle(true)">Publish Article</button>
+      </div>
+    </div>
+    <div class="editor-panel">
+      <div class="editor-body">
+        <input type="hidden" id="editId"/>
+
+        <!-- Title -->
+        <div class="field editor-full">
+          <label>Article Title *</label>
+          <input type="text" id="aTitle" placeholder="e.g. The 4-0 dismantling — how a 12-second press broke a champion"/>
+        </div>
+
+        <!-- Row: category, read time -->
+        <div class="field">
+          <label>Category</label>
+          <select id="aCategory">
+            <option>ANALYSIS</option><option>MATCH</option><option>TACTICS</option>
+            <option>TRANSFER</option><option>OPINION</option><option>DATA</option>
+            <option>SCOUTING</option><option>YOUTH</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Read Time (minutes)</label>
+          <input type="number" id="aReadTime" placeholder="5" min="1" max="60"/>
+        </div>
+
+        <!-- Cover URL -->
+        <div class="field editor-full">
+          <label>Cover Image URL (optional)</label>
+          <input type="url" id="aCoverUrl" placeholder="https://example.com/image.jpg" oninput="previewCover(this.value)"/>
+          <img id="coverPreview" class="cover-preview" alt="Cover preview"/>
+        </div>
+
+        <!-- Excerpt -->
+        <div class="field editor-full">
+          <label>Excerpt / Summary</label>
+          <textarea id="aExcerpt" rows="3" placeholder="A one-paragraph summary of the article (shown on article cards and in the hero section)…"></textarea>
+        </div>
+
+        <!-- Toggles -->
+        <div class="field editor-full">
+          <label>Options</label>
+          <div class="toggle-row">
+            <div class="toggle-item"><input type="checkbox" id="aPublished"/><label for="aPublished">Published (visible to readers)</label></div>
+            <div class="toggle-item"><input type="checkbox" id="aFeatured"/><label for="aFeatured">Featured (shown in hero section)</label></div>
+          </div>
+        </div>
+
+        <!-- Rich text editor -->
+        <div class="field editor-full">
+          <label>Article Content *</label>
+          <div class="rte-wrap">
+            <div class="rte-toolbar">
+              <button class="rte-btn" onclick="fmt('bold')" title="Bold"><b>B</b></button>
+              <button class="rte-btn" onclick="fmt('italic')" title="Italic"><i>I</i></button>
+              <button class="rte-btn" onclick="fmt('underline')" title="Underline"><u>U</u></button>
+              <button class="rte-btn" onclick="fmt('strikeThrough')" title="Strike">S̶</button>
+              <span style="width:1px;background:rgba(212,168,54,.15);margin:0 4px;"></span>
+              <button class="rte-btn" onclick="fmtBlock('h2')" title="Heading 2">H2</button>
+              <button class="rte-btn" onclick="fmtBlock('h3')" title="Heading 3">H3</button>
+              <button class="rte-btn" onclick="fmtBlock('blockquote')" title="Quote">❝</button>
+              <span style="width:1px;background:rgba(212,168,54,.15);margin:0 4px;"></span>
+              <button class="rte-btn" onclick="fmt('insertUnorderedList')" title="Bullet list">• List</button>
+              <button class="rte-btn" onclick="fmt('insertOrderedList')" title="Numbered list">1. List</button>
+              <button class="rte-btn" onclick="insertHR()" title="Divider">— HR</button>
+              <span style="width:1px;background:rgba(212,168,54,.15);margin:0 4px;"></span>
+              <button class="rte-btn" onclick="insertLink()" title="Link">🔗 Link</button>
+              <button class="rte-btn" onclick="insertImg()" title="Image">🖼 Image</button>
+              <span style="width:1px;background:rgba(212,168,54,.15);margin:0 4px;"></span>
+              <button class="rte-btn" onclick="clearEditor()" title="Clear" style="color:rgba(255,100,100,.7)">✕ Clear</button>
+            </div>
+            <div class="rte-editor" id="rteEditor" contenteditable="true"
+                 data-placeholder="Write your tactical analysis here… Use the toolbar above to format headings, quotes, and lists. Paste images by URL using the 🖼 button."></div>
+            <div class="rte-count" id="rteCount">0 words</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:20px 28px;border-top:1px solid rgba(212,168,54,.1);display:flex;gap:12px;justify-content:flex-end;">
+        <button class="btn btn-outline" onclick="goPage('articles')">Cancel</button>
+        <button class="btn btn-outline" onclick="saveArticle(false)">Save as Draft</button>
+        <button class="btn btn-primary" onclick="saveArticle(true)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          Publish Article
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMENTS -->
+  <div class="page" id="page-comments">
+    <div class="section-head">
+      <h2>Comments</h2>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(244,236,214,.4);letter-spacing:.15em">Latest 200 comments</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Author</th><th>Comment</th><th>Article</th><th>Date</th><th>Delete</th></tr></thead>
+        <tbody id="commentsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MEMBERS -->
+  <div class="page" id="page-members">
+    <div class="section-head">
+      <h2>Members</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Joined</th><th>Delete</th></tr></thead>
+        <tbody id="membersTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- NEWS -->
+  <div class="page" id="page-news">
+    <div class="section-head">
+      <h2>Liverpool News Feed</h2>
+      <button class="btn btn-primary" onclick="refreshNews()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/><path d="M14 12l-4-4m0 0l-4 4m4-4v8"/></svg>
+        Refresh Now
+      </button>
+    </div>
+    <div style="background:var(--black-2);border:1px solid rgba(212,168,54,.12);border-radius:10px;margin-bottom:20px;padding:18px 20px;font-size:13px;color:rgba(244,236,214,.6);">
+      News is auto-fetched every 6 hours from BBC Sport, Liverpool Echo, This Is Anfield, and Anfield Watch.
+      Click <strong style="color:var(--gold-bright)">Refresh Now</strong> to fetch immediately.
+    </div>
+    <div class="table-wrap" id="newsListWrap">
+      <div class="empty-state">Loading news…</div>
+    </div>
+  </div>
+
+  <!-- AI WRITER -->
+  <div class="page" id="page-ai-writer">
+    <div class="section-head">
+      <h2>AI Writer <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:.2em;font-weight:400;margin-left:12px;">POWERED BY CLAUDE</span></h2>
+    </div>
+
+    <!-- Status banner -->
+    <div id="aiStatusBanner" style="padding:16px 20px;border-radius:10px;margin-bottom:24px;font-size:14px;display:flex;align-items:center;gap:12px;"></div>
+
+    <!-- Config card -->
+    <div class="editor-panel" style="margin-bottom:28px;">
+      <div class="editor-header">
+        <h2>Configuration</h2>
+        <button class="btn btn-primary btn-sm" onclick="saveAiSettings()">Save Settings</button>
+      </div>
+      <div class="editor-body" style="gap:20px;">
+
+        <div class="field editor-full">
+          <label>Anthropic API Key</label>
+          <div style="display:flex;gap:10px;">
+            <input type="password" id="aiApiKey" placeholder="sk-ant-api03-…" style="flex:1;font-family:'JetBrains Mono',monospace;font-size:13px;"/>
+            <button class="btn btn-outline btn-sm" onclick="toggleKeyVisibility()">Show</button>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,236,214,.4);margin-top:8px;letter-spacing:.1em;">
+            Get your key at console.anthropic.com → API Keys. Stored securely on your server only.
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Auto-Generate Articles</label>
+          <div class="toggle-row" style="margin-top:6px;">
+            <div class="toggle-item">
+              <input type="checkbox" id="aiAutoGenerate"/>
+              <label for="aiAutoGenerate">Generate articles automatically after each news refresh</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Auto-Publish Generated Articles</label>
+          <div class="toggle-row" style="margin-top:6px;">
+            <div class="toggle-item">
+              <input type="checkbox" id="aiAutoPublish" checked/>
+              <label for="aiAutoPublish">Publish immediately (uncheck to save as drafts)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Articles per News Refresh</label>
+          <select id="aiMaxPerRefresh" style="max-width:180px;">
+            <option value="1">1 article</option>
+            <option value="2">2 articles</option>
+            <option value="3" selected>3 articles</option>
+            <option value="5">5 articles</option>
+            <option value="10">10 articles</option>
+          </select>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(244,236,214,.4);margin-top:8px;letter-spacing:.1em;">
+            How many new news items to convert to articles each time news refreshes (every 6h).
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div style="background:rgba(212,168,54,.04);border:1px solid rgba(212,168,54,.15);border-radius:10px;padding:22px;margin-bottom:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.2em;margin-bottom:8px;">01 · FETCH</div>
+        <div style="font-size:13px;color:rgba(244,236,214,.7);line-height:1.5;">Liverpool news is pulled every 6 hours from BBC Sport, Liverpool Echo, This Is Anfield and Anfield Watch.</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.2em;margin-bottom:8px;">02 · ANALYZE</div>
+        <div style="font-size:13px;color:rgba(244,236,214,.7);line-height:1.5;">Claude reads each headline and writes an original tactical analysis article in the VICYOLDE SOCCER style — not a copy, a deep analysis.</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.2em;margin-bottom:8px;">03 · PUBLISH</div>
+        <div style="font-size:13px;color:rgba(244,236,214,.7);line-height:1.5;">Articles go live on your blog automatically. You can review, edit, or delete them at any time from the Articles section.</div>
+      </div>
+    </div>
+
+    <!-- Manual generation -->
+    <div class="editor-panel" style="margin-bottom:28px;">
+      <div class="editor-header">
+        <h2>Generate Now — Pending News Items</h2>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-outline btn-sm" onclick="loadPendingNews()">↻ Refresh List</button>
+          <button class="btn btn-primary" onclick="generateAllPending()" id="genAllBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Generate All
+          </button>
+        </div>
+      </div>
+      <div id="pendingNewsList" style="max-height:480px;overflow-y:auto;">
+        <div class="empty-state">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Recently generated -->
+    <div class="editor-panel">
+      <div class="editor-header">
+        <h2>Recently Generated Articles</h2>
+        <button class="btn btn-outline btn-sm" onclick="loadGeneratedArticles()">↻ Refresh</button>
+      </div>
+      <div class="table-wrap" style="border:none;">
+        <table>
+          <thead><tr><th>Title</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="generatedArticlesBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="page-settings">
+    <div class="section-head"><h2>Settings</h2></div>
+    <div style="max-width:500px;">
+      <div class="editor-panel">
+        <div class="editor-header"><h2>Change Password</h2></div>
+        <div class="editor-body" style="grid-template-columns:1fr;gap:16px;">
+          <div class="field"><label>Current Password</label><input type="password" id="pwCurrent" placeholder="••••••••"/></div>
+          <div class="field"><label>New Password</label><input type="password" id="pwNew" placeholder="Min 6 characters"/></div>
+          <div class="field"><label>Confirm New Password</label><input type="password" id="pwConfirm" placeholder="Repeat new password"/></div>
+        </div>
+        <div style="padding:20px 28px;border-top:1px solid rgba(212,168,54,.1);">
+          <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const token = localStorage.getItem('vs_token');
+const user  = (() => { try { return JSON.parse(localStorage.getItem('vs_user')); } catch { return null; } })();
+if (!user || user.role !== 'admin') { location.href = '/login'; }
+
+// Set sidebar user
+document.getElementById('sidebarAv').textContent   = (user?.username||'V')[0].toUpperCase();
+document.getElementById('sidebarName').textContent  = user?.username || 'VICYOLDE';
+
+function logout() { localStorage.clear(); location.href = '/login'; }
+function authH() { return { 'Content-Type':'application/json', Authorization:'Bearer '+token }; }
+function esc(s) { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function fmtDate(d) { return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+function timeAgo(d) { const s=(Date.now()-new Date(d))/1000; if(s<3600)return Math.floor(s/60)+'m ago'; if(s<86400)return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago'; }
+
+// TOAST
+function toast(msg, type='success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast '+type+' show';
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// PAGES
+const pageTitles = { overview:'Overview', articles:'Articles', 'new-article':'New Article', comments:'Comments', members:'Members', news:'Liverpool News', 'ai-writer':'AI Writer', settings:'Settings' };
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelector(`[onclick="goPage('${id}')"]`)?.classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[id]||id;
+  if (id==='overview')    loadOverview();
+  if (id==='articles')    loadArticlesList();
+  if (id==='comments')    loadComments();
+  if (id==='members')     loadMembers();
+  if (id==='news')        loadNews();
+  if (id==='ai-writer')   loadAiWriter();
+  if (id==='new-article') resetEditor();
+}
+
+// OVERVIEW
+async function loadOverview() {
+  const s = await fetch('/api/stats').then(r=>r.json());
+  document.getElementById('ovArticles').textContent = s.articles;
+  document.getElementById('ovComments').textContent = s.comments;
+  document.getElementById('ovMembers').textContent  = s.members;
+  document.getElementById('ovNews').textContent     = s.news;
+}
+loadOverview();
+
+// ARTICLES LIST
+let allArticles = [];
+async function loadArticlesList() {
+  const tbody = document.getElementById('articlesTableBody');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:rgba(244,236,214,.4)">Loading…</td></tr>';
+  allArticles = await fetch('/api/articles/admin', { headers: authH() }).then(r=>r.json());
+  renderArticlesTable(allArticles);
+}
+function renderArticlesTable(list) {
+  const tbody = document.getElementById('articlesTableBody');
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">No articles yet. Write your first one!</div></td></tr>'; return; }
+  tbody.innerHTML = list.map(a=>`
+    <tr>
+      <td style="max-width:280px;"><div style="font-weight:600;line-height:1.3;margin-bottom:4px">${esc(a.title)}</div>
+        ${a.featured?'<span class="badge badge-feat">Featured</span>':''}
+        <div style="font-family:JetBrains Mono,monospace;font-size:10px;color:rgba(244,236,214,.35);margin-top:4px">/${a.slug}</div>
+      </td>
+      <td><span class="badge badge-cat">${a.category}</span></td>
+      <td><span class="badge ${a.published?'badge-pub':'badge-draft'}">${a.published?'Published':'Draft'}</span></td>
+      <td style="font-family:JetBrains Mono,monospace;font-size:12px">${a.comment_count}</td>
+      <td style="font-family:JetBrains Mono,monospace;font-size:11px;color:rgba(244,236,214,.5)">${fmtDate(a.created_at)}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a href="/article/${a.slug}" target="_blank" class="btn btn-outline btn-xs">View</a>
+          <button class="btn btn-outline btn-xs" onclick="editArticle(${a.id})">Edit</button>
+          <button class="btn btn-outline btn-xs" onclick="togglePublish(${a.id},${a.published})">${a.published?'Unpublish':'Publish'}</button>
+          <button class="btn btn-red btn-xs" onclick="deleteArticle(${a.id},'${esc(a.title).replace(/'/g,"\\'")}')">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+function filterArticles(q) {
+  q = q.toLowerCase();
+  renderArticlesTable(allArticles.filter(a=>a.title.toLowerCase().includes(q)||a.category.toLowerCase().includes(q)));
+}
+async function togglePublish(id, current) {
+  await fetch(`/api/articles/${id}`, { method:'PUT', headers:authH(), body: JSON.stringify({
+    ...allArticles.find(a=>a.id===id), published:!current
+  })});
+  toast(current?'Article unpublished':'Article published!'); loadArticlesList();
+}
+async function deleteArticle(id, title) {
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  await fetch(`/api/articles/${id}`,{method:'DELETE',headers:authH()});
+  toast('Article deleted.','error'); loadArticlesList();
+}
+
+// EDITOR
+let editingId = null;
+function resetEditor() {
+  editingId = null;
+  document.getElementById('editorTitle').textContent = 'New Article';
+  document.getElementById('editId').value = '';
+  document.getElementById('aTitle').value = '';
+  document.getElementById('aCategory').value = 'ANALYSIS';
+  document.getElementById('aReadTime').value = '';
+  document.getElementById('aCoverUrl').value = '';
+  document.getElementById('aExcerpt').value = '';
+  document.getElementById('aPublished').checked = false;
+  document.getElementById('aFeatured').checked  = false;
+  document.getElementById('rteEditor').innerHTML = '';
+  document.getElementById('coverPreview').style.display = 'none';
+  updateWordCount();
+}
+
+async function editArticle(id) {
+  const a = await fetch(`/api/articles/admin/${id}`,{headers:authH()}).then(r=>r.json());
+  editingId = id;
+  document.getElementById('editorTitle').textContent = 'Edit Article';
+  document.getElementById('aTitle').value    = a.title;
+  document.getElementById('aCategory').value = a.category;
+  document.getElementById('aReadTime').value = a.read_time;
+  document.getElementById('aCoverUrl').value = a.cover_url;
+  document.getElementById('aExcerpt').value  = a.excerpt;
+  document.getElementById('aPublished').checked = !!a.published;
+  document.getElementById('aFeatured').checked  = !!a.featured;
+  document.getElementById('rteEditor').innerHTML = a.content;
+  previewCover(a.cover_url);
+  updateWordCount();
+  goPage('new-article');
+}
+
+async function saveArticle(publish) {
+  const title   = document.getElementById('aTitle').value.trim();
+  const content = document.getElementById('rteEditor').innerHTML.trim();
+  if (!title)   { toast('Title is required.','error'); return; }
+  if (!content || content === '<br>') { toast('Content cannot be empty.','error'); return; }
+  const body = {
+    title,
+    excerpt:   document.getElementById('aExcerpt').value.trim(),
+    content,
+    category:  document.getElementById('aCategory').value,
+    read_time: parseInt(document.getElementById('aReadTime').value)||5,
+    cover_url: document.getElementById('aCoverUrl').value.trim(),
+    published: publish ? true : document.getElementById('aPublished').checked,
+    featured:  document.getElementById('aFeatured').checked,
+  };
+  const url    = editingId ? `/api/articles/${editingId}` : '/api/articles';
+  const method = editingId ? 'PUT' : 'POST';
+  const r = await fetch(url,{method,headers:authH(),body:JSON.stringify(body)});
+  if (r.ok) {
+    const a = await r.json();
+    toast(publish ? '✓ Article published!' : '✓ Draft saved!');
+    editingId = null;
+    goPage('articles');
+  } else {
+    const e = await r.json(); toast(e.error||'Error saving article.','error');
+  }
+}
+
+// RICH TEXT EDITOR
+function fmt(cmd, val) { document.execCommand(cmd,false,val||null); document.getElementById('rteEditor').focus(); updateWordCount(); }
+function fmtBlock(tag) {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const el = document.createElement(tag);
+  range.surroundContents(el);
+  updateWordCount();
+}
+function insertHR()   { document.execCommand('insertHorizontalRule',false,null); updateWordCount(); }
+function insertLink() { const u=prompt('Enter URL:'); if(u) fmt('createLink',u); }
+function insertImg()  { const u=prompt('Enter image URL:'); if(u) { document.execCommand('insertHTML',false,`<img src="${u}" alt="" style="max-width:100%;border-radius:8px;margin:20px 0;">`); updateWordCount(); } }
+function clearEditor(){ if(confirm('Clear all content?')) { document.getElementById('rteEditor').innerHTML=''; updateWordCount(); } }
+function updateWordCount() {
+  const text = document.getElementById('rteEditor').innerText||'';
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('rteCount').textContent = words+' word'+(words!==1?'s':'')+' · ~'+Math.max(1,Math.round(words/200))+' min read';
+}
+document.getElementById('rteEditor').addEventListener('input', updateWordCount);
+document.getElementById('rteEditor').addEventListener('keydown', e => {
+  if (e.key==='Tab') { e.preventDefault(); document.execCommand('insertText',false,'    '); }
+});
+
+function previewCover(url) {
+  const img = document.getElementById('coverPreview');
+  if (url) { img.src=url; img.style.display='block'; img.onerror=()=>img.style.display='none'; }
+  else { img.style.display='none'; }
+}
+
+// COMMENTS MODERATION
+async function loadComments() {
+  const tbody = document.getElementById('commentsTableBody');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:rgba(244,236,214,.4)">Loading…</td></tr>';
+  const comments = await fetch('/api/comments',{headers:authH()}).then(r=>r.json());
+  if (!comments.length) { tbody.innerHTML='<tr><td colspan="5"><div class="empty-state">No comments yet.</div></td></tr>'; return; }
+  tbody.innerHTML = comments.map(c=>`
+    <tr>
+      <td style="font-weight:600;white-space:nowrap">${esc(c.username)}</td>
+      <td style="max-width:300px;"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(244,236,214,.75)">${esc(c.body.slice(0,120))}${c.body.length>120?'…':''}</div></td>
+      <td><a href="/article/${c.article_slug}#comments" target="_blank" style="color:var(--gold);font-size:13px">${esc(c.article_title||'').slice(0,40)}…</a></td>
+      <td style="font-family:JetBrains Mono,monospace;font-size:11px;color:rgba(244,236,214,.5);white-space:nowrap">${timeAgo(c.created_at)}</td>
+      <td><button class="btn btn-red btn-xs" onclick="deleteComment(${c.id})">Delete</button></td>
+    </tr>`).join('');
+}
+async function deleteComment(id) {
+  if (!confirm('Delete this comment?')) return;
+  await fetch(`/api/comments/${id}`,{method:'DELETE',headers:authH()});
+  toast('Comment deleted.','error'); loadComments();
+}
+
+// MEMBERS
+async function loadMembers() {
+  const tbody = document.getElementById('membersTableBody');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:rgba(244,236,214,.4)">Loading…</td></tr>';
+  const members = await fetch('/api/auth/members',{headers:authH()}).then(r=>r.json());
+  tbody.innerHTML = members.map(m=>`
+    <tr>
+      <td style="font-weight:600">${esc(m.username)}</td>
+      <td style="color:rgba(244,236,214,.6)">${esc(m.email)}</td>
+      <td><span class="badge ${m.role==='admin'?'badge-feat':'badge-draft'}">${m.role}</span></td>
+      <td style="font-family:JetBrains Mono,monospace;font-size:11px;color:rgba(244,236,214,.5)">${fmtDate(m.created_at)}</td>
+      <td>${m.role!=='admin'?`<button class="btn btn-red btn-xs" onclick="deleteMember(${m.id},'${esc(m.username)}')">Remove</button>`:'-'}</td>
+    </tr>`).join('');
+}
+async function deleteMember(id, name) {
+  if (!confirm(`Remove member "${name}"?`)) return;
+  await fetch(`/api/auth/members/${id}`,{method:'DELETE',headers:authH()});
+  toast('Member removed.','error'); loadMembers();
+}
+
+// NEWS
+async function loadNews() {
+  const wrap = document.getElementById('newsListWrap');
+  wrap.innerHTML = '<div class="empty-state">Loading…</div>';
+  const items = await fetch('/api/news?limit=50').then(r=>r.json());
+  if (!items.length) { wrap.innerHTML = '<div class="empty-state">No news yet. Click Refresh Now.</div>'; return; }
+  wrap.innerHTML = items.map(n=>`
+    <div class="news-item">
+      ${n.image_url?`<img src="${n.image_url}" alt="" onerror="this.style.display='none'">`:'<div style="width:80px;height:54px;background:var(--black-3);border-radius:4px;flex-shrink:0"></div>'}
+      <div class="news-item-body">
+        <div class="news-item-source">${n.source}</div>
+        <div class="news-item-title"><a href="${n.link}" target="_blank" rel="noopener">${esc(n.title)}</a></div>
+        <div class="news-item-meta">${timeAgo(n.pub_date)}</div>
+      </div>
+    </div>`).join('');
+}
+async function refreshNews() {
+  toast('Fetching Liverpool news…');
+  const r = await fetch('/api/news/refresh',{method:'POST',headers:authH()});
+  const d = await r.json();
+  toast(r.ok?`News refreshed (${d.count} items)`:'Refresh failed','error' in d?'error':'success');
+  if (document.getElementById('page-news').classList.contains('active')) loadNews();
+  loadOverview();
+}
+
+// ── AI WRITER ─────────────────────────────────────────────────────────────
+async function loadAiWriter() {
+  await Promise.all([loadAiStatus(), loadPendingNews(), loadGeneratedArticles()]);
+}
+
+async function loadAiStatus() {
+  const banner = document.getElementById('aiStatusBanner');
+  try {
+    const s = await fetch('/api/settings/ai-status', { headers: authH() }).then(r => r.json());
+    // Populate form
+    document.getElementById('aiAutoGenerate').checked = s.auto_generate === '1';
+    document.getElementById('aiAutoPublish').checked  = s.auto_publish  === '1';
+    document.getElementById('aiMaxPerRefresh').value  = s.max_per_refresh || '3';
+
+    if (s.hasKey) {
+      banner.style.cssText = 'padding:16px 20px;border-radius:10px;margin-bottom:24px;font-size:14px;display:flex;align-items:center;gap:12px;background:rgba(80,200,80,.08);border:1px solid rgba(80,200,80,.3);color:#5cd65c;';
+      banner.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> API key configured — AI Writer is ready. '+(s.auto_generate==='1'?'<strong>Auto-generate is ON.</strong>':'Auto-generate is OFF. Enable it below to activate fully automatic article creation.');
+    } else {
+      banner.style.cssText = 'padding:16px 20px;border-radius:10px;margin-bottom:24px;font-size:14px;display:flex;align-items:center;gap:12px;background:rgba(212,168,54,.08);border:1px solid rgba(212,168,54,.3);color:var(--gold-bright);';
+      banner.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> No API key yet. Paste your Anthropic key below and save to activate the AI Writer.';
+    }
+  } catch {
+    banner.style.cssText = 'display:none';
+  }
+}
+
+async function saveAiSettings() {
+  const key = document.getElementById('aiApiKey').value.trim();
+  const body = {
+    auto_generate:   document.getElementById('aiAutoGenerate').checked ? '1' : '0',
+    auto_publish:    document.getElementById('aiAutoPublish').checked  ? '1' : '0',
+    max_per_refresh: document.getElementById('aiMaxPerRefresh').value,
+  };
+  if (key && !key.startsWith('••')) body.anthropic_api_key = key;
+  const r = await fetch('/api/settings', { method: 'PUT', headers: authH(), body: JSON.stringify(body) });
+  if (r.ok) {
+    toast('Settings saved!');
+    document.getElementById('aiApiKey').value = '';
+    loadAiStatus();
+  } else {
+    toast('Error saving settings.', 'error');
+  }
+}
+
+function toggleKeyVisibility() {
+  const inp = document.getElementById('aiApiKey');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+async function loadPendingNews() {
+  const el = document.getElementById('pendingNewsList');
+  el.innerHTML = '<div class="empty-state">Loading…</div>';
+  try {
+    const items = await fetch('/api/settings/pending-news', { headers: authH() }).then(r => r.json());
+    if (!items.length) {
+      el.innerHTML = '<div class="empty-state">All news items have been converted to articles.<br>Refresh news to get new items.</div>';
+      return;
+    }
+    el.innerHTML = items.map(n => `
+      <div class="news-item" id="ni-${n.id}">
+        ${n.image_url ? `<img src="${n.image_url}" alt="" onerror="this.style.display='none'">` : '<div style="width:80px;height:54px;background:var(--black-3);border-radius:4px;flex-shrink:0;display:grid;place-items:center;font-size:18px;">⚽</div>'}
+        <div class="news-item-body" style="flex:1;">
+          <div class="news-item-source">${esc(n.source)}</div>
+          <div class="news-item-title" style="font-size:14px;font-weight:500;line-height:1.4;margin-bottom:4px;">${esc(n.title)}</div>
+          <div class="news-item-meta">${timeAgo(n.pub_date)}</div>
+        </div>
+        <button class="btn btn-primary btn-sm" id="gen-btn-${n.id}" onclick="generateOneNews(${n.id})" style="flex-shrink:0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Generate
+        </button>
+      </div>`).join('');
+  } catch (e) {
+    el.innerHTML = `<div class="empty-state">Error: ${e.message}</div>`;
+  }
+}
+
+async function generateOneNews(newsId) {
+  const btn = document.getElementById('gen-btn-'+newsId);
+  const row = document.getElementById('ni-'+newsId);
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin360 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0"/></svg> Writing…';
+  try {
+    const r = await fetch(`/api/settings/generate-one/${newsId}`, { method: 'POST', headers: authH() });
+    const d = await r.json();
+    if (r.ok) {
+      row.style.opacity = '0.4';
+      row.style.pointerEvents = 'none';
+      btn.innerHTML = '✓ Done';
+      btn.className = 'btn btn-outline btn-sm';
+      toast(`✓ Article "${d.article.title.slice(0,50)}…" created!`);
+      loadGeneratedArticles();
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = 'Generate';
+      toast(d.error || 'Generation failed.', 'error');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = 'Generate';
+    toast('Network error: ' + e.message, 'error');
+  }
+}
+
+async function generateAllPending() {
+  const btn = document.getElementById('genAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Generating…';
+  const items = document.querySelectorAll('[id^="ni-"]');
+  let done = 0;
+  for (const row of items) {
+    const id = row.id.replace('ni-','');
+    const genBtn = document.getElementById('gen-btn-'+id);
+    if (!genBtn || genBtn.disabled) continue;
+    await generateOneNews(parseInt(id));
+    done++;
+    btn.innerHTML = `⏳ ${done}/${items.length} done…`;
+    await new Promise(r => setTimeout(r, 500)); // small pause between calls
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate All';
+  toast(`All articles generated!`);
+  loadOverview();
+}
+
+async function loadGeneratedArticles() {
+  const tbody = document.getElementById('generatedArticlesBody');
+  try {
+    const items = await fetch('/api/settings/generated-articles', { headers: authH() }).then(r => r.json());
+    if (!items.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No articles yet.</div></td></tr>'; return; }
+    tbody.innerHTML = items.map(a => `
+      <tr>
+        <td style="max-width:300px;font-weight:500;line-height:1.3">${esc(a.title)}</td>
+        <td><span class="badge ${a.published ? 'badge-pub' : 'badge-draft'}">${a.published ? 'Published' : 'Draft'}</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(244,236,214,.5)">${timeAgo(a.created_at)}</td>
+        <td style="display:flex;gap:6px;">
+          <a href="/article/${a.slug}" target="_blank" class="btn btn-outline btn-xs">View</a>
+          <button class="btn btn-outline btn-xs" onclick="editArticle(${a.id});goPage('new-article')">Edit</button>
+        </td>
+      </tr>`).join('');
+  } catch {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:rgba(244,236,214,.4)">Error loading.</td></tr>';
+  }
+}
+
+// Spin animation for loading icon
+const spinStyle = document.createElement('style');
+spinStyle.textContent = '@keyframes spin360{to{transform:rotate(360deg)}}';
+document.head.appendChild(spinStyle);
+
+// SETTINGS
+async function changePassword() {
+  const current    = document.getElementById('pwCurrent').value;
+  const newPassword = document.getElementById('pwNew').value;
+  const confirm    = document.getElementById('pwConfirm').value;
+  if (!current||!newPassword||!confirm) { toast('All fields required.','error'); return; }
+  if (newPassword !== confirm) { toast('New passwords do not match.','error'); return; }
+  if (newPassword.length < 6) { toast('Min 6 characters.','error'); return; }
+  const r = await fetch('/api/auth/password',{method:'PUT',headers:authH(),body:JSON.stringify({current,newPassword})});
+  const d = await r.json();
+  if (r.ok) { toast('Password updated!'); document.getElementById('pwCurrent').value=document.getElementById('pwNew').value=document.getElementById('pwConfirm').value=''; }
+  else toast(d.error||'Error','error');
+}
+</script>
+</body>
+</html>

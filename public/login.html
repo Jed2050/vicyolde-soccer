@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Join The Kop — VICYOLDE SOCCER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#0a0805;--black-2:#14110a;--black-3:#1d1810;--gold:#d4a836;--gold-bright:#f5cf5c;--gold-deep:#8a6818;--gold-glow:rgba(245,207,92,0.45);--cream:#f4ecd6;--red:#c8102e;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--black);color:var(--cream);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;}
+.bg-grad{position:fixed;inset:0;z-index:-1;background:radial-gradient(ellipse 80% 60% at 50% 20%,rgba(212,168,54,.2),transparent 55%),#0a0805;}
+.bg-grid{position:fixed;inset:0;z-index:-1;background-image:linear-gradient(rgba(212,168,54,.03)1px,transparent 1px),linear-gradient(90deg,rgba(212,168,54,.03)1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,black 30%,transparent 80%);}
+
+/* Brand */
+.brand-bar{display:flex;align-items:center;gap:14px;margin-bottom:48px;cursor:pointer;text-decoration:none;}
+.brand-crest{width:44px;height:50px;filter:drop-shadow(0 0 12px var(--gold-glow));}
+.brand-text .lockup{font-family:'Cinzel',serif;font-weight:800;font-size:18px;letter-spacing:.18em;background:linear-gradient(180deg,#f5cf5c,#d4a836 50%,#8a6818);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.brand-text .sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.4em;color:rgba(244,236,214,.45);margin-top:4px;}
+
+/* Card */
+.card{width:100%;max-width:460px;background:linear-gradient(180deg,var(--black-2),var(--black-3));border:1px solid rgba(212,168,54,.25);border-radius:16px;overflow:hidden;box-shadow:0 40px 80px -20px rgba(0,0,0,.6);}
+
+/* Tabs */
+.tabs{display:grid;grid-template-columns:1fr 1fr;}
+.tab{padding:20px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;color:rgba(244,236,214,.45);border-bottom:2px solid rgba(212,168,54,.1);transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;}
+.tab.active{color:var(--gold-bright);border-bottom-color:var(--gold);background:rgba(212,168,54,.04);}
+.tab:hover:not(.active){color:rgba(244,236,214,.7);}
+
+/* Form */
+.form-body{padding:32px;}
+.form-title{font-family:'Cinzel',serif;font-weight:700;font-size:26px;margin-bottom:8px;}
+.form-sub{font-size:14px;color:rgba(244,236,214,.55);margin-bottom:30px;font-weight:300;}
+.field{margin-bottom:20px;}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.field input{width:100%;background:rgba(10,8,5,.6);border:1px solid rgba(212,168,54,.2);border-radius:8px;padding:13px 16px;color:var(--cream);font-family:'Inter',sans-serif;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s;}
+.field input::placeholder{color:rgba(244,236,214,.3);}
+.field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,54,.1);}
+.submit-btn{width:100%;padding:16px;background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:var(--black);border:none;border-radius:8px;font-weight:800;font-size:14px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;margin-top:8px;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 30px -8px var(--gold-glow);}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px -8px var(--gold-glow);}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.error-msg{background:rgba(200,16,46,.12);border:1px solid rgba(200,16,46,.3);border-radius:6px;padding:12px 16px;color:#ff6680;font-size:13px;margin-bottom:16px;display:none;}
+.error-msg.show{display:block;}
+.divider{text-align:center;margin:20px 0;color:rgba(244,236,214,.3);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.15em;position:relative;}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:rgba(212,168,54,.1);}
+.divider::before{left:0;}.divider::after{right:0;}
+.switch-link{text-align:center;font-size:13px;color:rgba(244,236,214,.5);margin-top:20px;}
+.switch-link a{color:var(--gold);text-decoration:none;font-weight:600;cursor:pointer;}
+
+.rules{background:rgba(244,236,214,.02);border:1px solid rgba(212,168,54,.1);border-radius:8px;padding:16px;margin-bottom:20px;}
+.rules ul{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:12px;color:rgba(244,236,214,.6);line-height:1.5;}
+.rules li{display:flex;gap:10px;align-items:flex-start;}
+.rules li span:first-child{color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:10px;flex-shrink:0;margin-top:1px;}
+</style>
+</head>
+<body>
+<div class="bg-grad"></div>
+<div class="bg-grid"></div>
+
+<!-- CREST SVG -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+  <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="50%" stop-color="#d4a836"/><stop offset="100%" stop-color="#8a6818"/></linearGradient>
+  <radialGradient id="ballGrad" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5cf5c"/><stop offset="60%" stop-color="#a87c1c"/><stop offset="100%" stop-color="#3a2c0e"/></radialGradient>
+  <filter id="goldGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<symbol id="crest" viewBox="0 0 100 110">
+  <path d="M50 4 L92 16 L92 56 Q92 88 50 106 Q8 88 8 56 L8 16 Z" fill="url(#goldGrad)" stroke="#f5cf5c" stroke-width=".8" filter="url(#goldGlow)"/>
+  <path d="M50 10 L86 20 L86 56 Q86 84 50 100 Q14 84 14 56 L14 20 Z" fill="#0a0805" stroke="#d4a836" stroke-width=".6"/>
+  <polygon points="50,18 53,26 61,26 55,31 57,39 50,34 43,39 45,31 39,26 47,26" fill="url(#goldGrad)"/>
+  <circle cx="50" cy="62" r="16" fill="url(#ballGrad)" stroke="#f5cf5c" stroke-width=".6"/>
+  <polygon points="50,52 56,57 53,64 47,64 44,57" fill="#0a0805"/>
+  <rect x="20" y="84" width="60" height="11" rx="1" fill="#0a0805" stroke="#d4a836" stroke-width=".4"/>
+</symbol>
+</svg>
+
+<a class="brand-bar" href="/">
+  <svg class="brand-crest" viewBox="0 0 100 110"><use href="#crest"/></svg>
+  <div class="brand-text"><div class="lockup">VICYOLDE SOCCER</div><div class="sub">THE KOP CHRONICLE</div></div>
+</a>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('login')">Sign In</button>
+    <button class="tab" onclick="switchTab('register')">Join The Kop</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="form-body" id="loginForm">
+    <div class="form-title">Welcome back</div>
+    <div class="form-sub">Sign in to comment and discuss with The Kop.</div>
+    <div class="error-msg" id="loginError"></div>
+    <div class="field"><label>Username or Email</label><input type="text" id="loginUser" placeholder="VICYOLDE or your@email.com" autocomplete="username"/></div>
+    <div class="field"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"/></div>
+    <button class="submit-btn" onclick="doLogin()">Sign In</button>
+    <div class="switch-link">No account yet? <a onclick="switchTab('register')">Join The Kop →</a></div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="form-body" id="registerForm" style="display:none">
+    <div class="form-title">Join The Kop</div>
+    <div class="form-sub">Create an account to comment, react, and debate every match.</div>
+    <div class="error-msg" id="registerError"></div>
+    <div class="rules">
+      <ul>
+        <li><span>01</span><span>Tactics over tribalism. Always.</span></li>
+        <li><span>02</span><span>Disagree with the argument, not the person.</span></li>
+        <li><span>03</span><span>Cite a clip, a stat, a minute — show your work.</span></li>
+      </ul>
+    </div>
+    <div class="field"><label>Username</label><input type="text" id="regUser" placeholder="KopFan2026" autocomplete="username"/></div>
+    <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email"/></div>
+    <div class="field"><label>Password</label><input type="password" id="regPass" placeholder="Min. 6 characters" autocomplete="new-password"/></div>
+    <button class="submit-btn" onclick="doRegister()">Create Account</button>
+    <div class="switch-link">Already a member? <a onclick="switchTab('login')">Sign in →</a></div>
+  </div>
+</div>
+
+<div style="margin-top:28px;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(244,236,214,.35);letter-spacing:.15em;text-align:center">
+  FAN MEDIA · NOT AFFILIATED WITH ANY CLUB
+</div>
+
+<script>
+function switchTab(t) {
+  document.getElementById('loginForm').style.display    = t==='login'    ? '' : 'none';
+  document.getElementById('registerForm').style.display = t==='register' ? '' : 'none';
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='login')||(i===1&&t==='register')));
+  document.getElementById('loginError').classList.remove('show');
+  document.getElementById('registerError').classList.remove('show');
+}
+
+function showError(id, msg) { const el=document.getElementById(id); el.textContent=msg; el.classList.add('show'); }
+
+async function doLogin() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  if (!username || !password) return showError('loginError','Please fill in all fields.');
+  const btn = document.querySelector('#loginForm .submit-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const r = await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password})});
+    const data = await r.json();
+    if (!r.ok) { showError('loginError', data.error||'Login failed.'); btn.disabled=false; btn.textContent='Sign In'; return; }
+    localStorage.setItem('vs_token', data.token);
+    localStorage.setItem('vs_user', JSON.stringify(data.user));
+    location.href = data.user.role==='admin' ? '/dashboard' : (document.referrer||'/');
+  } catch { showError('loginError','Network error. Is the server running?'); btn.disabled=false; btn.textContent='Sign In'; }
+}
+
+async function doRegister() {
+  const username = document.getElementById('regUser').value.trim();
+  const email    = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPass').value;
+  if (!username||!email||!password) return showError('registerError','Please fill in all fields.');
+  if (password.length<6) return showError('registerError','Password must be at least 6 characters.');
+  const btn = document.querySelector('#registerForm .submit-btn');
+  btn.disabled=true; btn.textContent='Creating account…';
+  try {
+    const r = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password})});
+    const data = await r.json();
+    if (!r.ok) { showError('registerError',data.error||'Registration failed.'); btn.disabled=false; btn.textContent='Create Account'; return; }
+    localStorage.setItem('vs_token',data.token);
+    localStorage.setItem('vs_user',JSON.stringify(data.user));
+    location.href='/';
+  } catch { showError('registerError','Network error. Is the server running?'); btn.disabled=false; btn.textContent='Create Account'; }
+}
+
+// Enter key support
+document.addEventListener('keydown', e => { if (e.key==='Enter') { if(document.getElementById('loginForm').style.display!=='none') doLogin(); else doRegister(); }});
+
+// Run AFTER all functions are defined
+(function init() {
+  // Redirect if already logged in
+  const tok = localStorage.getItem('vs_token');
+  if (tok) {
+    try {
+      const u = JSON.parse(localStorage.getItem('vs_user') || '{}');
+      location.href = u.role === 'admin' ? '/dashboard' : '/';
+      return;
+    } catch { localStorage.clear(); }
+  }
+  // Switch to register tab if requested
+  if (location.search.includes('tab=register')) switchTab('register');
+})();
+</script>
+</body>
+</html>
